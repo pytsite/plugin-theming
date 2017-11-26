@@ -1,0 +1,29 @@
+{
+  "name": "theming",
+  "version": "1.0",
+  "description": {
+    "en": "Theming",
+    "ru": "Theming",
+    "uk": "Theming"
+  },
+  "url": "https://github.com/pytsite/plugin-theming",
+  "author": {
+    "name": "Alexander Shepetko",
+    "email": "a@shepetko.com",
+    "url": "https://shepetko.com"
+  },
+  "requires": {
+    "packages": [],
+    "plugins": [
+      "assetman",
+      "auth",
+      "file",
+      "font_awesome",
+      "http_api",
+      "odm",
+      "permissions",
+      "settings",
+      "widget"
+    ]
+  }
+}
