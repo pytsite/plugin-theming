@@ -6,7 +6,6 @@ from shutil import rmtree as _rmtree, move as _move
 from zipfile import ZipFile as _ZipFile
 from glob import glob as _glob
 from pytsite import reg as _reg, logger as _logger, util as _util, reload as _reload
-from plugins import settings as _settings
 from . import _theme, _error
 
 __author__ = 'Alexander Shepetko'
@@ -84,8 +83,8 @@ def switch(package_name: str):
 
     # Switch only if it really necessary
     if package_name != get().package_name:
-        _settings.put('theme.current', package_name)  # Mark theme as current
-        _settings.put('theme.compiled', False)  # Mark that assets compilation needed
+        _reg.put('theme.current', package_name)  # Mark theme as current
+        _reg.put('theme.compiled', False)  # Mark that assets compilation needed
         _reload.reload(0.1)
 
 
@@ -99,7 +98,7 @@ def register(package_name: str):
 
     theme = _theme.Theme(package_name)
 
-    if not _fallback or theme.package_name == _settings.get('theme.current'):
+    if not _fallback or theme.package_name == _reg.get('theme.current'):
         _fallback = theme
 
     _themes[package_name] = theme

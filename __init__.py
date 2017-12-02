@@ -10,7 +10,7 @@ __license__ = 'MIT'
 
 def _init():
     from os import listdir, path, makedirs
-    from pytsite import lang, router, tpl
+    from pytsite import lang, router, tpl, reg
     from plugins import assetman, settings, permissions, odm, file, http_api
     from . import _settings_form, _eh, _http_api_controllers, _model
 
@@ -27,7 +27,7 @@ def _init():
 
     # App's logo URL resolver
     def logo_url(width: int = 0, height: int = 0):
-        s = settings.get('theme.logo')
+        s = reg.get('theme.logo')
         try:
             return file.get(s).get_url(width=width, height=height) if s else assetman.url('$theme@img/appicon.png')
         except file.error.FileNotFound:
@@ -53,9 +53,9 @@ def _init():
     assetman.on_split_location(_eh.assetman_split_location)
 
     # HTTP API handlers
-    http_api.handle('POST', 'theme', _http_api_controllers.Install(), 'theming@install')
-    http_api.handle('PATCH', 'theme', _http_api_controllers.Switch(), 'theming@switch')
-    http_api.handle('DELETE', 'theme', _http_api_controllers.Uninstall(), 'theming@uninstall')
+    http_api.handle('POST', 'theme', _http_api_controllers.Install, 'theming@install')
+    http_api.handle('PATCH', 'theme', _http_api_controllers.Switch, 'theming@switch')
+    http_api.handle('DELETE', 'theme', _http_api_controllers.Uninstall, 'theming@uninstall')
 
     themes_dir = themes_path()
 

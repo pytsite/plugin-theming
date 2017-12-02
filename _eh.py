@@ -3,8 +3,8 @@
 import subprocess as _subprocess
 from typing import Optional as _Optional
 from os import path as _path
-from pytsite import metatag as _metatag, console as _console, lang as _lang
-from plugins import assetman as _assetman, file as _file, odm as _odm, settings as _settings
+from pytsite import metatag as _metatag, console as _console, lang as _lang, reg as _reg
+from plugins import assetman as _assetman, file as _file, odm as _odm
 from . import _api
 
 __author__ = 'Alexander Shepetko'
@@ -22,7 +22,7 @@ def router_dispatch():
     _metatag.t_set('pytsite-theme', _api.get().package_name)
 
     # Set favicon URL
-    favicon_fid = _settings.get('theme.favicon')
+    favicon_fid = _reg.get('theme.favicon')
     if favicon_fid:
         try:
             f = _file.get(favicon_fid)

@@ -2,8 +2,7 @@
 """
 from importlib import import_module as _import_module
 from os import path as _path, makedirs as _makedirs
-from pytsite import logger as _logger, package_info as _package_info
-from plugins import settings as _settings
+from pytsite import logger as _logger, package_info as _package_info, reg as _reg
 from . import _error
 
 __author__ = 'Alexander Shepetko'
@@ -73,7 +72,7 @@ class Theme:
             raise _error.ThemeLoadError("Error while loading theme package '{}': {}".format(self._package_name, e))
 
         # Compile assets
-        if not _settings.get('theme.compiled'):
+        if not _reg.get('theme.compiled'):
             try:
                 # Because theme loads at application startup, it is a good idea to check assetman's setup before
                 # starting build process and setup it if necessary. There is a bad idea to call check_setup()
@@ -83,7 +82,7 @@ class Theme:
                     assetman.npm_setup()
 
                 assetman.build(self._package_name)
-                _settings.put('theme.compiled', True)
+                _reg.put('theme.compiled', True)
             except assetman.error.NoTasksDefined as e:
                 _logger.warn(e)
 
@@ -129,4 +128,4 @@ class Theme:
 
     @property
     def settings(self) -> dict:
-        return _settings.get('theme.theme_' + self._name, {})
+        return _reg.get('theme.theme_' + self._name, {})

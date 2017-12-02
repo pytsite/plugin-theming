@@ -2,7 +2,8 @@
 """
 import re as _re
 from pytsite import lang as _lang, html as _html, router as _router
-from plugins import widget as _widget, file as _file, odm as _odm, settings as _settings, http_api as _http_api
+from plugins import widget as _widget, file as _file, odm as _odm, settings as _settings, http_api as _http_api, \
+    file_ui as _file_ui
 from . import _api
 
 __author__ = 'Alexander Shepetko'
@@ -146,14 +147,14 @@ class Form(_settings.Form):
         ))
 
         # Logo
-        self.add_widget(_file.widget.ImagesUpload(
+        self.add_widget(_file_ui.widget.ImagesUpload(
             uid='setting_logo',
             weight=31,
             label=_lang.t('theming@logo'),
         ))
 
         # Favicon
-        self.add_widget(_file.widget.ImagesUpload(
+        self.add_widget(_file_ui.widget.ImagesUpload(
             uid='setting_favicon',
             weight=40,
             label=_lang.t('theming@favicon'),
