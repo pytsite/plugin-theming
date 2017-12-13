@@ -1,14 +1,18 @@
-"""PytSite Theme Package
+"""PytSite Theming Plugin
 """
-from . import _error as error
-from ._api import themes_path, register, get_registered, switch, get, load, install
-
 __author__ = 'Alexander Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
+from pytsite import plugman as _plugman
 
-def _init():
+if _plugman.is_installed(__name__):
+    # Public API
+    from . import _error as error
+    from ._api import themes_path, register, get_registered, switch, get, load, install
+
+
+def plugin_load():
     from os import listdir, path, makedirs
     from pytsite import lang, router, tpl, reg
     from plugins import assetman, settings, permissions, odm, file, http_api
@@ -20,8 +24,8 @@ def _init():
 
     # Register assetman package and tasks
     assetman.register_package(__name__)
-    assetman.t_js(__name__ + '@**')
-    assetman.t_less(__name__ + '@**')
+    assetman.t_js(__name__)
+    assetman.t_less(__name__)
     assetman.js_module('pytsite-theme-widget-themes-browser', 'theming@js/themes-browser')
     assetman.js_module('pytsite-theme-widget-translations-edit', 'theming@js/translations-edit')
 
@@ -63,7 +67,6 @@ def _init():
     if not path.isdir(themes_dir):
         makedirs(themes_dir, 0o755)
 
-
     themes_names = sorted(listdir(themes_dir))
     if themes_names:
         # Register all themes found in the themes directory
@@ -78,6 +81,3 @@ def _init():
 
     else:
         raise error.NoThemesFound(themes_dir)
-
-
-_init()
