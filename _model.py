@@ -1,11 +1,11 @@
 """PytSite Language UI ODM Models
 """
-from pytsite import lang as _lang
-from plugins import odm as _odm
-
 __author__ = 'Alexander Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
+
+from pytsite import lang as _lang
+from plugins import odm as _odm
 
 
 class Translation(_odm.model.Entity):

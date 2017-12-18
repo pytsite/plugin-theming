@@ -5,7 +5,7 @@ from os import path as _path, unlink as _unlink, chdir as _chdir, getcwd as _get
 from shutil import rmtree as _rmtree, move as _move
 from zipfile import ZipFile as _ZipFile
 from glob import glob as _glob
-from pytsite import reg as _reg, logger as _logger, util as _util, reload as _reload
+from pytsite import reg as _reg, logger as _logger, util as _util, reload as _reload, plugman as _plugman
 from . import _theme, _error
 
 __author__ = 'Alexander Shepetko'
@@ -88,7 +88,7 @@ def switch(package_name: str):
         _reload.reload(0.1)
 
 
-def register(package_name: str):
+def register(package_name: str) -> _theme.Theme:
     """Register a theme
     """
     global _fallback
@@ -103,8 +103,10 @@ def register(package_name: str):
 
     _themes[package_name] = theme
 
+    return theme
 
-def get_registered() -> _Dict[str, _theme.Theme]:
+
+def get_all() -> _Dict[str, _theme.Theme]:
     """Get all registered themes
     """
     return _themes
@@ -135,21 +137,33 @@ def install(archive_path: str, delete_zip_file: bool = True):
     tmp_dir_path = _util.mk_tmp_dir(subdir='theme')
 
     try:
-        # Extract archove to the temporary directory
+        # Extract archive to the temporary directory
         _extract_archive(archive_path, tmp_dir_path)
 
         # Try to initialize the theme to ensure everything is okay
         theme = _theme.Theme('tmp.theme.{}'.format(_path.basename(tmp_dir_path)))
 
+        # Install required pip packages
+        for pkg_spec in theme.requires['packages']:
+            if not _util.is_pip_package_installed(pkg_spec):
+                _logger.info("Theme '{}' requires pip package '{}', going to install it".format(theme.name, pkg_spec))
+                _util.install_pip_package(pkg_spec)
+
+        # Install required plugins
+        for plugin_spec in theme.requires['packages']:
+            if not _plugman.is_installed(plugin_spec):
+                _logger.info("Theme '{}' requires plugin '{}', going to install it".format(theme.name, plugin_spec))
+                _plugman.install(plugin_spec)
+
         # Theme has been successfully initialized, so now it can be moved to the 'themes' package
         dst_path = _path.join(_themes_path, theme.name)
         if _path.exists(dst_path):
-            _logger.info("Existing theme installation at '{}' will be replaced with new one".format(dst_path))
+            _logger.warn("Existing theme installation at '{}' will be replaced with new one".format(dst_path))
             _rmtree(dst_path)
 
         # Move directory to the final location
         _move(tmp_dir_path, dst_path)
-        _logger.info("'{}' has been successfully installed to '{}'".format(tmp_dir_path, dst_path))
+        _logger.info("'{}' has been successfully moved to '{}'".format(tmp_dir_path, dst_path))
 
         _reload.reload(0.1)
 
@@ -158,9 +172,11 @@ def install(archive_path: str, delete_zip_file: bool = True):
         raise e
 
     finally:
+        # Remove temporary directory
         if _path.exists(tmp_dir_path):
             _rmtree(tmp_dir_path)
 
+        # Remove ZIP file
         if delete_zip_file:
             _unlink(archive_path)
 

@@ -1,13 +1,13 @@
 """PytSite Theme
 """
-from importlib import import_module as _import_module
-from os import path as _path, makedirs as _makedirs
-from pytsite import logger as _logger, package_info as _package_info, reg as _reg
-from . import _error
-
 __author__ = 'Alexander Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
+
+from importlib import import_module as _import_module
+from os import path as _path, makedirs as _makedirs
+from pytsite import logger as _logger, package_info as _package_info, reg as _reg, plugman as _plugman, util as _util
+from . import _error
 
 
 class Theme:
@@ -27,6 +27,7 @@ class Theme:
         self._description = pkg_data['description']
         self._author = pkg_data['author']
         self._url = pkg_data['url']
+        self._requires = pkg_data['requires']
 
         self._package = None  # Will be filled after loading
         self._is_loaded = False
@@ -36,6 +37,18 @@ class Theme:
         """
         from pytsite import lang, tpl
         from plugins import assetman
+
+        # Check for required pip packages
+        for pkg_spec in self._requires['packages']:
+            if not _util.is_pip_package_installed(pkg_spec):
+                raise _error.ThemeInitError(
+                    "Pip package '{}' required by theme '{}' is not installed".format(pkg_spec, self._name))
+
+        # Check for required plugins
+        for plugin_spec in self._requires['plugins']:
+            if not _plugman.is_installed(plugin_spec):
+                raise _error.ThemeInitError(
+                    "Plugin '{}' required by theme '{}' is not installed".format(plugin_spec, self._name))
 
         # Create translations directory
         lang_dir = _path.join(self._path, 'lang')
@@ -64,7 +77,11 @@ class Theme:
             _makedirs(assets_path, 0o755, True)
         assetman.register_package(self._package_name, 'assets')
 
-        # Load theme module
+        # Load required plugins
+        for plugin_spec in self._requires['plugins']:
+            _plugman.load(plugin_spec)
+
+        # Load theme's module
         try:
             self._package = _import_module(self._package_name)
             _logger.info("Theme '{}' successfully loaded from '{}'".format(self._package_name, self._path))
@@ -110,6 +127,10 @@ class Theme:
     @property
     def url(self) -> str:
         return self._url
+
+    @property
+    def requires(self) -> dict:
+        return self._requires
 
     @property
     def package(self):

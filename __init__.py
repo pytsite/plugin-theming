@@ -4,19 +4,38 @@ __author__ = 'Alexander Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
-from pytsite import plugman as _plugman
-
-if _plugman.is_installed(__name__):
-    # Public API
-    from . import _error as error
-    from ._api import themes_path, register, get_registered, switch, get, load, install
-
 
 def plugin_load():
     from os import listdir, path, makedirs
+    from pytsite import console
+    from . import _api, _error
+
+    themes_dir = _api.themes_path()
+
+    # Create themes directory
+    if not path.isdir(themes_dir):
+        makedirs(themes_dir, 0o755)
+
+    # Register all themes found in the themes directory
+    themes_names = sorted(listdir(themes_dir))
+    if themes_names:
+        for name in themes_names:
+            if not path.isdir(themes_dir) or name.startswith('_') or name.startswith('.'):
+                continue
+
+            try:
+                _api.register('themes.' + name)
+            except _error.ThemeInitError as e:
+                console.print_warning("Theme '{}' wasn't registered: {}".format(name, e))
+
+    else:
+        raise _error.NoThemesFound(themes_dir)
+
+
+def plugin_load_uwsgi():
     from pytsite import lang, router, tpl, reg
     from plugins import assetman, settings, permissions, odm, file, http_api
-    from . import _settings_form, _eh, _http_api_controllers, _model
+    from . import _api, _settings_form, _eh, _http_api_controllers, _model, _error
 
     # Translations
     lang.register_package(__name__)
@@ -47,8 +66,7 @@ def plugin_load():
     odm.register_model('theme_translation', _model.Translation)
 
     # Settings
-    settings.define('theme', _settings_form.Form, 'theming@appearance', 'fa fa-paint-brush',
-                    'theme.manage')
+    settings.define('theme', _settings_form.Form, 'theming@appearance', 'fa fa-paint-brush', 'theme.manage')
 
     # Event listeners
     router.on_dispatch(_eh.router_dispatch)
@@ -61,23 +79,5 @@ def plugin_load():
     http_api.handle('PATCH', 'theme', _http_api_controllers.Switch, 'theming@switch')
     http_api.handle('DELETE', 'theme', _http_api_controllers.Uninstall, 'theming@uninstall')
 
-    themes_dir = themes_path()
-
-    # Create themes directory
-    if not path.isdir(themes_dir):
-        makedirs(themes_dir, 0o755)
-
-    themes_names = sorted(listdir(themes_dir))
-    if themes_names:
-        # Register all themes found in the themes directory
-        for name in themes_names:
-            if not path.isdir(themes_dir) or name.startswith('_') or name.startswith('.'):
-                continue
-
-            register('themes.' + name)
-
-        # Load default theme
-        load()
-
-    else:
-        raise error.NoThemesFound(themes_dir)
+    # Load default theme
+    _api.load()

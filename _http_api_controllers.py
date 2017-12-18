@@ -1,14 +1,14 @@
 """PytSite Theme HTTP API
 """
+__author__ = 'Alexander Shepetko'
+__email__ = 'a@shepetko.com'
+__license__ = 'MIT'
+
 from os import close as _file_close
 from werkzeug.datastructures import FileStorage as _FileStorage
 from pytsite import routing as _routing, lang as _lang, http as _http, util as _util
 from plugins import auth as _auth
 from . import _api
-
-__author__ = 'Alexander Shepetko'
-__email__ = 'a@shepetko.com'
-__license__ = 'MIT'
 
 
 class Install(_routing.Controller):

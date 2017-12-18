@@ -1,14 +1,14 @@
 """PytSite Theme Settings Form
 """
+__author__ = 'Alexander Shepetko'
+__email__ = 'a@shepetko.com'
+__license__ = 'MIT'
+
 import re as _re
 from pytsite import lang as _lang, html as _html, router as _router
 from plugins import widget as _widget, file as _file, odm as _odm, settings as _settings, http_api as _http_api, \
     file_ui as _file_ui
 from . import _api
-
-__author__ = 'Alexander Shepetko'
-__email__ = 'a@shepetko.com'
-__license__ = 'MIT'
 
 _TRANSLATION_MSG_ID_RE = _re.compile('^translation_[a-z0-9._@]+')
 
@@ -38,7 +38,7 @@ class _ThemesBrowser(_widget.Abstract):
         t_head.append(_html.Th(_lang.t('theming@actions')))
 
         t_body = table.append(_html.TBody())
-        for theme in _api.get_registered().values():
+        for theme in _api.get_all().values():
             tr = t_body.append(_html.Tr())
             tr.append(_html.Td(theme.name))
             tr.append(_html.Td(theme.version))
