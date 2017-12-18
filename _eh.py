@@ -7,7 +7,8 @@ __license__ = 'MIT'
 import subprocess as _subprocess
 from typing import Optional as _Optional
 from os import path as _path
-from pytsite import metatag as _metatag, console as _console, lang as _lang, reg as _reg
+from pytsite import metatag as _metatag, console as _console, lang as _lang, reg as _reg, util as _util, \
+    plugman as _plugman
 from plugins import assetman as _assetman, file as _file, odm as _odm
 from . import _api
 
@@ -78,8 +79,16 @@ def assetman_split_location(location: str):
 
 
 def update_stage_2():
-    # Update all installed themes, if applicable
+    # Update all installed themes
     for theme in _api.get_all().values():
         if _path.exists(_path.join(theme.path, '.git')):
             _console.print_info(_lang.t('theming@updating_theme', {'name': theme.name}))
             _subprocess.call(['git', '-C', theme.path, 'pull'])
+
+            # Install or upgrade required pip packagers
+            for pkg_spec in theme.requires['packages']:
+                _util.install_pip_package(pkg_spec, _util.is_pip_package_installed(pkg_spec))
+
+            # Install or upgrade required plugins
+            for plugin_spec in theme.requires['plugins']:
+                _plugman.install(plugin_spec)

@@ -7,8 +7,9 @@ __license__ = 'MIT'
 
 def plugin_load():
     from os import listdir, path, makedirs
-    from pytsite import console
-    from . import _api, _error
+    from pytsite import console, lang
+    from plugins import assetman
+    from . import _api, _error, _eh
 
     themes_dir = _api.themes_path()
 
@@ -27,26 +28,27 @@ def plugin_load():
                 _api.register('themes.' + name)
             except _error.ThemeInitError as e:
                 console.print_warning("Theme '{}' wasn't registered: {}".format(name, e))
-
     else:
         raise _error.NoThemesFound(themes_dir)
+
+    # Language resources
+    lang.register_package(__name__)
+
+    # Assetman resources
+    assetman.register_package(__name__)
+    assetman.t_js(__name__)
+    assetman.t_less(__name__)
+    assetman.js_module('pytsite-theme-widget-themes-browser', 'theming@js/themes-browser')
+    assetman.js_module('pytsite-theme-widget-translations-edit', 'theming@js/translations-edit')
+
+    # Load default theme
+    _api.load()
 
 
 def plugin_load_uwsgi():
     from pytsite import lang, router, tpl, reg
     from plugins import assetman, settings, permissions, odm, file, http_api
     from . import _api, _settings_form, _eh, _http_api_controllers, _model, _error
-
-    # Translations
-    lang.register_package(__name__)
-    lang.on_translate(_eh.lang_translate)
-
-    # Register assetman package and tasks
-    assetman.register_package(__name__)
-    assetman.t_js(__name__)
-    assetman.t_less(__name__)
-    assetman.js_module('pytsite-theme-widget-themes-browser', 'theming@js/themes-browser')
-    assetman.js_module('pytsite-theme-widget-translations-edit', 'theming@js/translations-edit')
 
     # App's logo URL resolver
     def logo_url(width: int = 0, height: int = 0):
@@ -73,11 +75,9 @@ def plugin_load_uwsgi():
     lang.on_split_msg_id(_eh.lang_split_msg_id)
     tpl.on_split_location(_eh.tpl_split_location)
     assetman.on_split_location(_eh.assetman_split_location)
+    lang.on_translate(_eh.lang_translate)
 
     # HTTP API handlers
     http_api.handle('POST', 'theme', _http_api_controllers.Install, 'theming@install')
     http_api.handle('PATCH', 'theme', _http_api_controllers.Switch, 'theming@switch')
     http_api.handle('DELETE', 'theme', _http_api_controllers.Uninstall, 'theming@uninstall')
-
-    # Load default theme
-    _api.load()
