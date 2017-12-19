@@ -4,20 +4,25 @@
 ## Changelog
 
 
-### 1.3.3 (2017-12-18)
+### 1.3.4 (2017-12-19)
 
-Fixed logging issues.
+Init fixed.
+
+
+### 1.3.3 (2017-12-19)
+
+Logging issues fixed.
 
 
 ### 1.3.2 (2017-12-18)
 
-Fixed init code.
+Init fixed.
 
 
 ### 1.3.1 (2017-12-18)
 
-- Added automatic dependencies update.
-- Fixed init code.
+- Automatic dependencies update added.
+- Init code fixed.
 
 
 ### 1.3 (2017-12-18)

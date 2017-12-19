@@ -8,8 +8,8 @@ __license__ = 'MIT'
 def plugin_load():
     from os import listdir, path, makedirs
     from pytsite import console, lang
-    from plugins import assetman
-    from . import _api, _error, _eh
+    from plugins import assetman, settings
+    from . import _api, _error, _eh, _settings_form
 
     themes_dir = _api.themes_path()
 
@@ -44,14 +44,17 @@ def plugin_load():
     assetman.js_module('pytsite-theme-widget-themes-browser', 'theming@js/themes-browser')
     assetman.js_module('pytsite-theme-widget-translations-edit', 'theming@js/translations-edit')
 
+    # Settings
+    settings.define('theme', _settings_form.Form, 'theming@appearance', 'fa fa-paint-brush', 'theme.manage')
+
     # Load default theme
     _api.load()
 
 
 def plugin_load_uwsgi():
     from pytsite import router, tpl, reg
-    from plugins import assetman, settings, permissions, odm, file, http_api
-    from . import _api, _settings_form, _eh, _http_api_controllers, _model, _error
+    from plugins import assetman, permissions, odm, file, http_api
+    from . import _api, _eh, _http_api_controllers, _model, _error
 
     # App's logo URL resolver
     def logo_url(width: int = 0, height: int = 0):
@@ -70,9 +73,6 @@ def plugin_load_uwsgi():
 
     # ODM models
     odm.register_model('theme_translation', _model.Translation)
-
-    # Settings
-    settings.define('theme', _settings_form.Form, 'theming@appearance', 'fa fa-paint-brush', 'theme.manage')
 
     # Event listeners
     router.on_dispatch(_eh.router_dispatch)
