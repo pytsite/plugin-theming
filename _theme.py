@@ -29,7 +29,7 @@ class Theme:
         self._url = pkg_data['url']
         self._requires = pkg_data['requires']
 
-        self._package = None  # Will be filled after loading
+        self._package = None
         self._is_loaded = False
 
     def load(self):
@@ -84,7 +84,7 @@ class Theme:
         # Load theme's module
         try:
             self._package = _import_module(self._package_name)
-            _logger.info("Theme '{}' successfully loaded from '{}'".format(self._package_name, self._path))
+            _logger.debug("Theme '{}' successfully loaded from '{}'".format(self._package_name, self._path))
         except ImportError as e:
             raise _error.ThemeLoadError("Error while loading theme package '{}': {}".format(self._package_name, e))
 
@@ -94,7 +94,7 @@ class Theme:
                 assetman.build(self._package_name)
                 _reg.put('theme.compiled', True)
             except assetman.error.NoTasksDefined as e:
-                _logger.warn(e)
+                _logger.warn(str(e))
 
         self._is_loaded = True
 

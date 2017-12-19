@@ -4,9 +4,14 @@
 ## Changelog
 
 
+### 1.3.3 (2017-12-18)
+
+Fixed logging issues.
+
+
 ### 1.3.2 (2017-12-18)
 
-- Fixed init code.
+Fixed init code.
 
 
 ### 1.3.1 (2017-12-18)

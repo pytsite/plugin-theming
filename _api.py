@@ -1,5 +1,9 @@
 """PytSite Theme API Functions
 """
+__author__ = 'Alexander Shepetko'
+__email__ = 'a@shepetko.com'
+__license__ = 'MIT'
+
 from typing import Dict as _Dict
 from os import path as _path, unlink as _unlink, chdir as _chdir, getcwd as _getcwd, rmdir as _rmdir
 from shutil import rmtree as _rmtree, move as _move
@@ -8,17 +12,13 @@ from glob import glob as _glob
 from pytsite import reg as _reg, logger as _logger, util as _util, reload as _reload, plugman as _plugman
 from . import _theme, _error
 
-__author__ = 'Alexander Shepetko'
-__email__ = 'a@shepetko.com'
-__license__ = 'MIT'
-
 _themes_path = _path.join(_reg.get('paths.root'), 'themes')
 
 # All registered themes
 _themes = {}  # type: _Dict[str, _theme.Theme]
 
-# First registered theme
-_fallback = None  # type: _theme.Theme
+# Default theme
+_default = None  # type: _theme.Theme
 
 # Currently loaded theme
 _loaded = None  # type: _theme.Theme
@@ -27,7 +27,6 @@ _loaded = None  # type: _theme.Theme
 def _extract_archive(src_file_path: str, dst_dir_path):
     """Extract theme archive
     """
-
     # Extract all files
     with _ZipFile(src_file_path) as z_file:
         z_file.extractall(dst_dir_path)
@@ -50,8 +49,8 @@ def _extract_archive(src_file_path: str, dst_dir_path):
 
     _chdir(orig_cwd)
 
-    _logger.info("Theme files successfully extracted from file '{}' to directory '{}'".
-                 format(src_file_path, dst_dir_path))
+    _logger.debug("Theme files successfully extracted from file '{}' to directory '{}'".
+                  format(src_file_path, dst_dir_path))
 
 
 def themes_path():
@@ -61,13 +60,13 @@ def themes_path():
 
 
 def get(package_name: str = None) -> _theme.Theme:
-    """Get theme by package name or default
+    """Get a theme
     """
     if not _themes:
         raise _error.NoThemesRegistered()
 
     if not package_name:
-        return _loaded or _fallback
+        return _loaded or _default
 
     try:
         return _themes[package_name]
@@ -85,21 +84,21 @@ def switch(package_name: str):
     if package_name != get().package_name:
         _reg.put('theme.current', package_name)  # Mark theme as current
         _reg.put('theme.compiled', False)  # Mark that assets compilation needed
-        _reload.reload(0.1)
+        _reload.reload()
 
 
 def register(package_name: str) -> _theme.Theme:
     """Register a theme
     """
-    global _fallback
+    global _default
 
     if package_name in _themes:
         raise _error.ThemeAlreadyRegistered(package_name)
 
     theme = _theme.Theme(package_name)
 
-    if not _fallback or theme.package_name == _reg.get('theme.current'):
-        _fallback = theme
+    if not _default or theme.package_name == _reg.get('theme.current'):
+        _default = theme
 
     _themes[package_name] = theme
 
@@ -131,9 +130,9 @@ def load(package_name: str = None) -> _theme.Theme:
 def install(archive_path: str, delete_zip_file: bool = True):
     """Install a theme from a zip-file
     """
-    _logger.info('Requested theme installation from zip-file {}'.format(archive_path))
+    _logger.debug('Requested theme installation from zip-file {}'.format(archive_path))
 
-    # Create temporary directgory
+    # Create temporary directory
     tmp_dir_path = _util.mk_tmp_dir(subdir='theme')
 
     try:
@@ -163,13 +162,9 @@ def install(archive_path: str, delete_zip_file: bool = True):
 
         # Move directory to the final location
         _move(tmp_dir_path, dst_path)
-        _logger.info("'{}' has been successfully moved to '{}'".format(tmp_dir_path, dst_path))
+        _logger.debug("'{}' has been successfully moved to '{}'".format(tmp_dir_path, dst_path))
 
-        _reload.reload(0.1)
-
-    except Exception as e:
-        _logger.error(e, exc_info=True)
-        raise e
+        _reload.reload()
 
     finally:
         # Remove temporary directory
@@ -182,10 +177,12 @@ def install(archive_path: str, delete_zip_file: bool = True):
 
 
 def uninstall(package_name: str):
+    """Uninstall a theme
+    """
     theme = get(package_name)
 
     if theme.name == get().name:
-        raise RuntimeError('Cannot uninstall current theme, please switch to another theme before doing uninstallation')
+        raise RuntimeError('Cannot uninstall current theme, please switch to another theme before uninstallation')
 
     del _themes[package_name]
     _rmtree(theme.path)
