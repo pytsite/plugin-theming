@@ -11,8 +11,6 @@ def _register_resources():
     from . import _eh
 
     lang.register_package(__name__)
-    lang.on_split_msg_id(_eh.lang_split_msg_id)
-    lang.on_translate(_eh.lang_translate)
 
     # Assetman resources
     assetman.register_package(__name__)
@@ -25,7 +23,7 @@ def _register_resources():
 
 def plugin_load():
     from os import listdir, path, makedirs
-    from pytsite import console
+    from pytsite import console, lang
     from plugins import settings
     from . import _api, _error, _eh, _settings_form
 
@@ -56,6 +54,10 @@ def plugin_load():
 
     # Load default theme
     _api.load()
+
+    # Events handlers
+    lang.on_split_msg_id(_eh.lang_split_msg_id)
+    lang.on_translate(_eh.lang_translate)
 
 
 def plugin_load_uwsgi():
