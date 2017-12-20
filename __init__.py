@@ -5,10 +5,28 @@ __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
 
+def _register_resources():
+    from pytsite import lang
+    from plugins import assetman
+    from . import _eh
+
+    lang.register_package(__name__)
+    lang.on_split_msg_id(_eh.lang_split_msg_id)
+    lang.on_translate(_eh.lang_translate)
+
+    # Assetman resources
+    assetman.register_package(__name__)
+    assetman.on_split_location(_eh.assetman_split_location)
+    assetman.t_js(__name__)
+    assetman.t_less(__name__)
+    assetman.js_module('theme-widget-themes-browser', 'theming@js/themes-browser')
+    assetman.js_module('theme-widget-translations-edit', 'theming@js/translations-edit')
+
+
 def plugin_load():
     from os import listdir, path, makedirs
-    from pytsite import console, lang
-    from plugins import assetman, settings
+    from pytsite import console
+    from plugins import settings
     from . import _api, _error, _eh, _settings_form
 
     themes_dir = _api.themes_path()
@@ -31,18 +49,7 @@ def plugin_load():
     else:
         raise _error.NoThemesFound(themes_dir)
 
-    # Language resources
-    lang.register_package(__name__)
-    lang.on_split_msg_id(_eh.lang_split_msg_id)
-    lang.on_translate(_eh.lang_translate)
-
-    # Assetman resources
-    assetman.register_package(__name__)
-    assetman.on_split_location(_eh.assetman_split_location)
-    assetman.t_js(__name__)
-    assetman.t_less(__name__)
-    assetman.js_module('pytsite-theme-widget-themes-browser', 'theming@js/themes-browser')
-    assetman.js_module('pytsite-theme-widget-translations-edit', 'theming@js/translations-edit')
+    _register_resources()
 
     # Settings
     settings.define('theme', _settings_form.Form, 'theming@appearance', 'fa fa-paint-brush', 'theme.manage')
@@ -81,3 +88,11 @@ def plugin_load_uwsgi():
     http_api.handle('POST', 'theme', _http_api_controllers.Install, 'theming@install')
     http_api.handle('PATCH', 'theme', _http_api_controllers.Switch, 'theming@switch')
     http_api.handle('DELETE', 'theme', _http_api_controllers.Uninstall, 'theming@uninstall')
+
+
+def plugin_install():
+    from plugins import assetman
+
+    _register_resources()
+    assetman.build(__name__)
+    assetman.build_translations()

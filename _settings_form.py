@@ -21,7 +21,7 @@ class _ThemesBrowser(_widget.Abstract):
 
         self._data['http-api-ep-switch'] = _http_api.endpoint('theming@switch')
         self._data['http-api-ep-uninstall'] = _http_api.endpoint('theming@uninstall')
-        self._js_module = 'pytsite-theme-widget-themes-browser'
+        self._js_module = 'theme-widget-themes-browser'
 
     def _get_element(self, **kwargs) -> _html.Element:
         cont = _html.TagLessElement()
@@ -70,7 +70,7 @@ class _TranslationsEditTable(_widget.Abstract):
         super().__init__(uid, **kwargs)
 
         self._css = 'translations-edit-table'
-        self._js_module = 'pytsite-theme-widget-translations-edit'
+        self._js_module = 'theme-widget-translations-edit'
 
     def _get_element(self):
         cont = _html.TagLessElement()
