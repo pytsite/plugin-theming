@@ -41,14 +41,12 @@ class Theme:
         # Check for required pip packages
         for pkg_spec in self._requires['packages']:
             if not _util.is_pip_package_installed(pkg_spec):
-                raise _error.ThemeInitError(
-                    "Pip package '{}' required by theme '{}' is not installed".format(pkg_spec, self._name))
+                _util.install_pip_package(pkg_spec)
 
         # Check for required plugins
         for plugin_spec in self._requires['plugins']:
             if not _plugman.is_installed(plugin_spec):
-                raise _error.ThemeInitError(
-                    "Plugin '{}' required by theme '{}' is not installed".format(plugin_spec, self._name))
+                _plugman.install(plugin_spec)
 
         # Create translations directory
         lang_dir = _path.join(self._path, 'lang')
@@ -85,13 +83,14 @@ class Theme:
         try:
             self._package = _import_module(self._package_name)
             _logger.debug("Theme '{}' successfully loaded from '{}'".format(self._package_name, self._path))
-        except ImportError as e:
+        except Exception as e:
             raise _error.ThemeLoadError("Error while loading theme package '{}': {}".format(self._package_name, e))
 
         # Compile assets
         if not _reg.get('theme.compiled'):
             try:
                 assetman.build(self._package_name)
+                assetman.build_translations()
                 _reg.put('theme.compiled', True)
             except assetman.error.NoTasksDefined as e:
                 _logger.warn(str(e))
