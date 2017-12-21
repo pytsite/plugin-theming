@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.3.8 (2017-12-21)
+
+Init code refactored.
+
+
 ### 1.3.7 (2017-12-21)
 
 Automatic installation of dependencies added.
