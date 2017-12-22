@@ -30,7 +30,7 @@ def plugin_install():
 
 def plugin_load():
     from os import listdir, path, makedirs
-    from pytsite import console, lang
+    from pytsite import console, lang, update
     from plugins import settings
     from . import _api, _error, _eh, _settings_form
 
@@ -62,6 +62,9 @@ def plugin_load():
 
     # Settings
     settings.define('theme', _settings_form.Form, 'theming@appearance', 'fa fa-paint-brush', 'theme.manage')
+
+    # Events handlers
+    update.on_update_after(_eh.update_after)
 
     # Load default theme
     _api.load()

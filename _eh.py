@@ -78,16 +78,17 @@ def assetman_split_location(location: str):
     return location
 
 
-def update_stage_2():
+def update_after():
     # Update all installed themes
     for theme in _api.get_all().values():
         if _path.exists(_path.join(theme.path, '.git')):
             _console.print_info(_lang.t('theming@updating_theme', {'name': theme.name}))
+
             _subprocess.call(['git', '-C', theme.path, 'pull'])
 
             # Install or upgrade required pip packagers
             for pkg_spec in theme.requires['packages']:
-                _util.install_pip_package(pkg_spec, _util.is_pip_package_installed(pkg_spec))
+                _util.install_pip_package(pkg_spec)
 
             # Install or upgrade required plugins
             for plugin_spec in theme.requires['plugins']:

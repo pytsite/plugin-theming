@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.3.9 (2017-12-22)
+
+Theme dependencies update fixed.
+
+
 ### 1.3.8 (2017-12-21)
 
 Init code refactored.
