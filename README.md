@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.3.10 (2018-01-02)
+
+Support for PytSite-7.3.
+
+
 ### 1.3.9 (2017-12-22)
 
 Theme dependencies update fixed.

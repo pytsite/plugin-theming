@@ -21,7 +21,7 @@ class Theme:
         pkg_data = _package_info.data(package_name)
 
         self._package_name = package_name
-        self._path = _package_info.resolve_path(package_name)
+        self._path = _package_info.resolve_package_path(package_name)
         self._name = pkg_data['name']
         self._version = pkg_data['version']
         self._description = pkg_data['description']
