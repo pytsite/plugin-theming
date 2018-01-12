@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.3.11 (2018-01-12)
+
+Automatic theme requirements checking added.
+
+
 ### 1.3.10 (2018-01-02)
 
 Support for PytSite-7.3.

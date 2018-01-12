@@ -6,7 +6,8 @@ __license__ = 'MIT'
 
 from importlib import import_module as _import_module
 from os import path as _path, makedirs as _makedirs
-from pytsite import logger as _logger, package_info as _package_info, reg as _reg, plugman as _plugman, util as _util
+from pytsite import logger as _logger, package_info as _package_info, reg as _reg, plugman as _plugman, util as _util, \
+    lang as _lang, tpl as _tpl
 from . import _error
 
 
@@ -35,18 +36,13 @@ class Theme:
     def load(self):
         """Load the theme
         """
-        from pytsite import lang, tpl
         from plugins import assetman
 
-        # Check for required pip packages
-        for pkg_spec in self._requires['packages']:
-            if not _util.is_pip_package_installed(pkg_spec):
-                _util.install_pip_package(pkg_spec)
-
-        # Check for required plugins
-        for plugin_spec in self._requires['plugins']:
-            if not _plugman.is_installed(plugin_spec):
-                _plugman.install(plugin_spec)
+        # Check for requirements
+        try:
+            _util.check_package_requirements(self._package_name)
+        except _util.error.Error as e:
+            raise RuntimeError('Error while loading theme {}: {}'.format(self._package_name, e))
 
         # Create translations directory
         lang_dir = _path.join(self._path, 'lang')
@@ -54,20 +50,20 @@ class Theme:
             _makedirs(lang_dir, 0o755, True)
 
         # Create translation stub files
-        for lng in lang.langs():
+        for lng in _lang.langs():
             lng_f_path = _path.join(lang_dir, '{}.yml'.format(lng))
             if not _path.exists(lng_f_path):
                 with open(lng_f_path, 'wt'):
                     pass
 
         # Register translations package
-        lang.register_package(self._package_name, 'lang')
+        _lang.register_package(self._package_name, 'lang')
 
         # Register templates package
         tpl_path = _path.join(self._path, 'tpl')
         if not _path.exists(tpl_path):
             _makedirs(tpl_path, 0o755, True)
-        tpl.register_package(self._package_name, 'tpl')
+        _tpl.register_package(self._package_name, 'tpl')
 
         # Register assetman package
         assets_path = _path.join(self._path, 'assets')
@@ -82,7 +78,7 @@ class Theme:
         # Load theme's module
         try:
             self._package = _import_module(self._package_name)
-            _logger.debug("Theme '{}' successfully loaded from '{}'".format(self._package_name, self._path))
+            _logger.debug("Theme '{}' successfully loaded".format(self._package_name))
         except Exception as e:
             raise _error.ThemeLoadError("Error while loading theme package '{}': {}".format(self._package_name, e))
 
