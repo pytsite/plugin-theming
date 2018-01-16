@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.3.12 (2018-01-16)
+
+Cache usage fixed.
+
+
 ### 1.3.11 (2018-01-12)
 
 Automatic theme requirements checking added.
