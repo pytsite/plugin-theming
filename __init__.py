@@ -5,34 +5,11 @@ __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
 
-def _register_assetman_resources():
-    from plugins import assetman
-
-    # Assetman resources
-    if not assetman.is_package_registered(__name__):
-        from . import _eh
-
-        assetman.register_package(__name__)
-        assetman.on_split_location(_eh.assetman_split_location)
-        assetman.t_js(__name__)
-        assetman.t_less(__name__)
-        assetman.js_module('theme-widget-themes-browser', 'theming@js/themes-browser')
-        assetman.js_module('theme-widget-translations-edit', 'theming@js/translations-edit')
-
-    return assetman
-
-
-def plugin_install():
-    assetman = _register_assetman_resources()
-    assetman.build(__name__)
-    assetman.build_translations()
-
-
 def plugin_load():
     from os import listdir, path, makedirs
     from pytsite import console, lang, update
-    from plugins import settings
-    from . import _api, _error, _eh, _settings_form
+    from plugins import assetman
+    from . import _api, _error, _eh
 
     themes_dir = _api.themes_path()
 
@@ -54,14 +31,18 @@ def plugin_load():
     else:
         raise _error.NoThemesFound(themes_dir)
 
-    # Resources
+    # Language resources
     lang.register_package(__name__)
     lang.on_split_msg_id(_eh.lang_split_msg_id)
     lang.on_translate(_eh.lang_translate)
-    _register_assetman_resources()
 
-    # Settings
-    settings.define('theme', _settings_form.Form, 'theming@appearance', 'fa fa-paint-brush', 'theme.manage')
+    # Assets
+    assetman.register_package(__name__)
+    assetman.on_split_location(_eh.assetman_split_location)
+    assetman.t_js(__name__)
+    assetman.t_less(__name__)
+    assetman.js_module('theme-widget-themes-browser', 'theming@js/themes-browser')
+    assetman.js_module('theme-widget-translations-edit', 'theming@js/translations-edit')
 
     # Events handlers
     update.on_update_after(_eh.update_after)
@@ -70,10 +51,17 @@ def plugin_load():
     _api.load()
 
 
+def plugin_install():
+    from plugins import assetman
+
+    assetman.build(__name__)
+    assetman.build_translations()
+
+
 def plugin_load_uwsgi():
     from pytsite import router, tpl, reg
-    from plugins import assetman, permissions, odm, file, http_api
-    from . import _api, _eh, _http_api_controllers, _model, _error
+    from plugins import assetman, odm, file, http_api, settings
+    from . import _api, _eh, _http_api_controllers, _model, _error, _settings_form
 
     # App's logo URL resolver
     def logo_url(width: int = 0, height: int = 0):
@@ -87,11 +75,11 @@ def plugin_load_uwsgi():
     tpl.register_global('theme_logo_url', logo_url)
     tpl.on_split_location(_eh.tpl_split_location)
 
-    # Permissions
-    permissions.define_permission('theme.manage', 'theming@manage_themes', 'app')
-
     # ODM models
     odm.register_model('theme_translation', _model.Translation)
+
+    # Settings
+    settings.define('theme', _settings_form.Form, 'theming@appearance', 'fa fa-paint-brush')
 
     # Event listeners
     router.on_dispatch(_eh.router_dispatch)

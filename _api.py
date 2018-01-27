@@ -15,7 +15,7 @@ from . import _theme, _error
 _themes_path = _path.join(_reg.get('paths.root'), 'themes')
 
 # All registered themes
-_themes = {}  # type: _Dict[str, _theme.Theme]
+_fallback_theme_name = {}  # type: _Dict[str, _theme.Theme]
 
 # Default theme
 _default = None  # type: _theme.Theme
@@ -62,14 +62,14 @@ def themes_path():
 def get(package_name: str = None) -> _theme.Theme:
     """Get a theme
     """
-    if not _themes:
+    if not _fallback_theme_name:
         raise _error.NoThemesRegistered()
 
     if not package_name:
         return _loaded or _default
 
     try:
-        return _themes[package_name]
+        return _fallback_theme_name[package_name]
     except KeyError:
         raise _error.ThemeNotRegistered(package_name)
 
@@ -77,7 +77,7 @@ def get(package_name: str = None) -> _theme.Theme:
 def switch(package_name: str):
     """Switch current theme
     """
-    if package_name not in _themes:
+    if package_name not in _fallback_theme_name:
         raise _error.ThemeNotRegistered(package_name)
 
     # Switch only if it really necessary
@@ -92,7 +92,7 @@ def register(package_name: str) -> _theme.Theme:
     """
     global _default
 
-    if package_name in _themes:
+    if package_name in _fallback_theme_name:
         raise _error.ThemeAlreadyRegistered(package_name)
 
     theme = _theme.Theme(package_name)
@@ -100,7 +100,7 @@ def register(package_name: str) -> _theme.Theme:
     if not _default or theme.package_name == _reg.get('theme.current'):
         _default = theme
 
-    _themes[package_name] = theme
+    _fallback_theme_name[package_name] = theme
 
     return theme
 
@@ -108,7 +108,7 @@ def register(package_name: str) -> _theme.Theme:
 def get_all() -> _Dict[str, _theme.Theme]:
     """Get all registered themes
     """
-    return _themes
+    return _fallback_theme_name
 
 
 def load(package_name: str = None) -> _theme.Theme:
@@ -184,7 +184,7 @@ def uninstall(package_name: str):
     if theme.name == get().name:
         raise RuntimeError('Cannot uninstall current theme, please switch to another theme before uninstallation')
 
-    del _themes[package_name]
+    del _fallback_theme_name[package_name]
     _rmtree(theme.path)
 
     _logger.info("Theme '{}' has been successfully uninstalled from '{}'".format(theme.name, theme.path))

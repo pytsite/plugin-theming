@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.4 (2018-01-27)
+
+Support for `settings-1.3`.
+
+
 ### 1.3.12 (2018-01-16)
 
 Cache usage fixed.
