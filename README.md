@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.5 (2018-01-29)
+
+Support for `assetman-1.3`.
+
+
 ### 1.4 (2018-01-27)
 
 Support for `settings-1.3`.

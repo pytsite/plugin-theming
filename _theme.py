@@ -84,12 +84,9 @@ class Theme:
 
         # Compile assets
         if not _reg.get('theme.compiled'):
-            try:
-                assetman.build(self._package_name)
-                assetman.build_translations()
-                _reg.put('theme.compiled', True)
-            except assetman.error.NoTasksDefined as e:
-                _logger.warn(str(e))
+            assetman.build(self._package_name)
+            assetman.build_translations()
+            _reg.put('theme.compiled', True)
 
         self._is_loaded = True
 
