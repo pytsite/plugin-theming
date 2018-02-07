@@ -40,8 +40,8 @@ class Theme:
 
         # Check for requirements
         try:
-            _util.check_package_requirements(self._package_name)
-        except _util.error.Error as e:
+            _package_info.check_requirements(self._package_name)
+        except _package_info.error.Error as e:
             raise RuntimeError('Error while loading theme {}: {}'.format(self._package_name, e))
 
         # Create translations directory

@@ -9,7 +9,7 @@ from os import path as _path, unlink as _unlink, chdir as _chdir, getcwd as _get
 from shutil import rmtree as _rmtree, move as _move
 from zipfile import ZipFile as _ZipFile
 from glob import glob as _glob
-from pytsite import reg as _reg, logger as _logger, util as _util, reload as _reload, plugman as _plugman
+from pytsite import reg as _reg, logger as _logger, util as _util, reload as _reload, plugman as _plugman, pip as _pip
 from . import _theme, _error
 
 _themes_path = _path.join(_reg.get('paths.root'), 'themes')
@@ -144,9 +144,9 @@ def install(archive_path: str, delete_zip_file: bool = True):
 
         # Install required pip packages
         for pkg_spec in theme.requires['packages']:
-            if not _util.is_pip_package_installed(pkg_spec):
+            if not _pip.is_installed(pkg_spec):
                 _logger.info("Theme '{}' requires pip package '{}', going to install it".format(theme.name, pkg_spec))
-                _util.install_pip_package(pkg_spec)
+                _pip.install(pkg_spec)
 
         # Install required plugins
         for plugin_spec in theme.requires['packages']:

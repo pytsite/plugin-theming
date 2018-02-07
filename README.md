@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.6 (2018-02-07)
+
+Support for PytSite-7.7.
+
+
 ### 1.5 (2018-01-29)
 
 Support for `assetman-1.3`.
