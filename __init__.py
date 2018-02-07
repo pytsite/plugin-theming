@@ -7,9 +7,9 @@ __license__ = 'MIT'
 
 def plugin_load():
     from os import listdir, path, makedirs
-    from pytsite import console, lang, update
-    from plugins import assetman
-    from . import _api, _error, _eh
+    from pytsite import console, lang, update, tpl, reg
+    from plugins import assetman, odm, file
+    from . import _api, _error, _eh, _model
 
     themes_dir = _api.themes_path()
 
@@ -33,6 +33,11 @@ def plugin_load():
 
     # Language resources
     lang.register_package(__name__)
+
+    # ODM models
+    odm.register_model('theme_translation', _model.Translation)
+
+    # Language events handlers
     lang.on_split_msg_id(_eh.lang_split_msg_id)
     lang.on_translate(_eh.lang_translate)
 
@@ -44,7 +49,19 @@ def plugin_load():
     assetman.js_module('theme-widget-themes-browser', 'theming@js/themes-browser')
     assetman.js_module('theme-widget-translations-edit', 'theming@js/translations-edit')
 
+    # App's logo URL resolver
+    def logo_url(width: int = 0, height: int = 0):
+        s = reg.get('theme.logo')
+        try:
+            return file.get(s).get_url(width=width, height=height) if s else assetman.url('$theme@img/appicon.png')
+        except file.error.FileNotFound:
+            return assetman.url('$theme@img/appicon.png')
+
+    # Tpl globals and events listeners
+    tpl.register_global('theme_logo_url', logo_url)
+
     # Events handlers
+    tpl.on_split_location(_eh.tpl_split_location)
     update.on_update_after(_eh.update_after)
 
     # Load default theme
@@ -59,29 +76,14 @@ def plugin_install():
 
 
 def plugin_load_uwsgi():
-    from pytsite import router, tpl, reg
-    from plugins import assetman, odm, file, http_api, settings
-    from . import _api, _eh, _http_api_controllers, _model, _error, _settings_form
-
-    # App's logo URL resolver
-    def logo_url(width: int = 0, height: int = 0):
-        s = reg.get('theme.logo')
-        try:
-            return file.get(s).get_url(width=width, height=height) if s else assetman.url('$theme@img/appicon.png')
-        except file.error.FileNotFound:
-            return assetman.url('$theme@img/appicon.png')
-
-    # Tpl globals and events listeners
-    tpl.register_global('theme_logo_url', logo_url)
-    tpl.on_split_location(_eh.tpl_split_location)
-
-    # ODM models
-    odm.register_model('theme_translation', _model.Translation)
+    from pytsite import router
+    from plugins import http_api, settings
+    from . import _api, _eh, _http_api_controllers, _error, _settings_form
 
     # Settings
     settings.define('theme', _settings_form.Form, 'theming@appearance', 'fa fa-paint-brush')
 
-    # Event listeners
+    # Events handlers
     router.on_dispatch(_eh.router_dispatch)
 
     # HTTP API handlers

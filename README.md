@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.7.1 (2018-02-08)
+
+Init code fixed.
+
+
 ### 1.7 (2018-02-07)
 
 Support for init hooks.
