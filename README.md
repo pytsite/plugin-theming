@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.7 (2018-02-07)
+
+Support for init hooks.
+
+
 ### 1.6 (2018-02-07)
 
 Support for PytSite-7.7.

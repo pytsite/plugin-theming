@@ -6,8 +6,8 @@ __license__ = 'MIT'
 
 from importlib import import_module as _import_module
 from os import path as _path, makedirs as _makedirs
-from pytsite import logger as _logger, package_info as _package_info, reg as _reg, plugman as _plugman, util as _util, \
-    lang as _lang, tpl as _tpl
+from pytsite import logger as _logger, package_info as _package_info, reg as _reg, plugman as _plugman, lang as _lang, \
+    tpl as _tpl
 from . import _error
 
 
@@ -30,7 +30,7 @@ class Theme:
         self._url = pkg_data['url']
         self._requires = pkg_data['requires']
 
-        self._package = None
+        self._module = None
         self._is_loaded = False
 
     def load(self):
@@ -77,7 +77,16 @@ class Theme:
 
         # Load theme's module
         try:
-            self._package = _import_module(self._package_name)
+            self._module = _import_module(self._package_name)
+            if hasattr(self._module, 'theme_load') and callable(self._module.theme_load):
+                self._module.theme_load()
+
+            env_load_hook_name = 'theme_load_' + _reg.get('env.type')
+            if hasattr(self._module, env_load_hook_name):
+                env_load_hook = getattr(self._module, env_load_hook_name)
+                if callable(env_load_hook):
+                    env_load_hook()
+
             _logger.debug("Theme '{}' successfully loaded".format(self._package_name))
         except Exception as e:
             raise _error.ThemeLoadError("Error while loading theme package '{}': {}".format(self._package_name, e))
@@ -125,8 +134,8 @@ class Theme:
         return self._requires
 
     @property
-    def package(self):
-        return self._package
+    def module(self):
+        return self._module
 
     @property
     def is_loaded(self) -> bool:
