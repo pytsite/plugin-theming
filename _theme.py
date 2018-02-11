@@ -81,11 +81,14 @@ class Theme:
             if hasattr(self._module, 'theme_load') and callable(self._module.theme_load):
                 self._module.theme_load()
 
-            env_load_hook_name = 'theme_load_' + _reg.get('env.type')
-            if hasattr(self._module, env_load_hook_name):
-                env_load_hook = getattr(self._module, env_load_hook_name)
-                if callable(env_load_hook):
-                    env_load_hook()
+            # theme_load_{env.type}() hook
+            env_type = _reg.get('env.type')
+            hook_names = ['theme_load_{}'.format(env_type)]
+            if env_type == 'wsgi':
+                hook_names.append('theme_load_uwsgi')
+            for hook_name in hook_names:
+                if hasattr(self._module, hook_name):
+                    getattr(self._module, hook_name)()
 
             _logger.debug("Theme '{}' successfully loaded".format(self._package_name))
         except Exception as e:
