@@ -62,7 +62,7 @@ def plugin_load():
 
     # Events handlers
     tpl.on_split_location(_eh.tpl_split_location)
-    update.on_update_after(_eh.update_after)
+    update.on_update(_eh.update)
 
     # Load default theme
     _api.load()

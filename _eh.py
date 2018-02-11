@@ -78,7 +78,7 @@ def assetman_split_location(location: str):
     return location
 
 
-def update_after():
+def update(data: dict):
     # Update all installed themes
     for theme in _api.get_all().values():
         _console.print_info(_lang.t('theming@updating_theme', {'name': theme.name}))
