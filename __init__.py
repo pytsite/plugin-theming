@@ -8,8 +8,8 @@ __license__ = 'MIT'
 def plugin_load():
     from os import listdir, path, makedirs
     from pytsite import console, lang, update, tpl, reg
-    from plugins import assetman, odm, file
-    from . import _api, _error, _eh, _model
+    from plugins import assetman, file
+    from . import _api, _error, _eh
 
     themes_dir = _api.themes_path()
 
@@ -34,12 +34,8 @@ def plugin_load():
     # Language resources
     lang.register_package(__name__)
 
-    # ODM models
-    odm.register_model('theme_translation', _model.Translation)
-
     # Language events handlers
     lang.on_split_msg_id(_eh.lang_split_msg_id)
-    lang.on_translate(_eh.lang_translate)
 
     # Assets
     assetman.register_package(__name__)

@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.9 (2018-02-14)
+
+Translations UI removed.
+
+
 ### 1.8 (2018-02-11)
 
 Support for PytSite-7.9.

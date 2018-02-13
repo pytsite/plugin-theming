@@ -5,8 +5,8 @@ __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
 import re as _re
-from pytsite import lang as _lang, html as _html, router as _router
-from plugins import widget as _widget, file as _file, odm as _odm, settings as _settings, http_api as _http_api, \
+from pytsite import lang as _lang, html as _html
+from plugins import widget as _widget, file as _file, settings as _settings, http_api as _http_api, \
     file_ui as _file_ui
 from . import _api
 
@@ -65,61 +65,12 @@ class _ThemesBrowser(_widget.Abstract):
         return cont
 
 
-class _TranslationsEditTable(_widget.Abstract):
-    def __init__(self, uid: str, **kwargs):
-        super().__init__(uid, **kwargs)
-
-        self._css = 'translations-edit-table'
-        self._js_module = 'theme-widget-translations-edit'
-
-    def _get_element(self):
-        cont = _html.TagLessElement()
-
-        # Header
-        cont.append(_html.H2(_lang.t('theming@theme_translations')))
-
-        # Table
-        table = cont.append(_html.Table(css='table table-striped table-bordered table-hover'))
-
-        # Table header
-        t_head = table.append(_html.THead())
-        t_head_tr = t_head.append(_html.Tr())
-        t_head_tr.append(_html.Th(_lang.t('theming@message_id')))
-        t_head_tr.append(_html.Th(_lang.t('theming@message_translation')))
-
-        # Table body
-        t_body = table.append(_html.TBody())
-        theme_pkg_name = _api.get().package_name
-        for msg_id, msg_trans in _lang.get_package_translations(theme_pkg_name).items():
-            if msg_id.startswith('setting_'):
-                continue
-
-            tr = t_body.append(_html.Tr())
-
-            # Message ID
-            tr.append(_html.Td(msg_id, css='msg-id'))
-
-            # Translation
-            entity = _odm.find('theme_translation') \
-                .eq('message_id', '{}@{}'.format(theme_pkg_name, msg_id)) \
-                .eq('language', _lang.get_current()) \
-                .first()
-            if entity:
-                msg_trans = entity.f_get('translation')
-
-            msg_trans_td = tr.append(_html.Td(css='msg-translation'))
-            msg_trans_td.append(_html.Input(type='text', name='translation_{}@{}'.format(theme_pkg_name, msg_id),
-                                            value=msg_trans, css='form-control'))
-
-        return cont
-
-
 class Form(_settings.Form):
     def _on_setup_form(self, **kwargs):
         self.nocache = True
 
     def _on_setup_widgets(self):
-        # Upload theme header
+        # Label
         self.add_widget(_widget.static.HTML(
             uid='upload_header',
             weight=10,
@@ -140,6 +91,7 @@ class Form(_settings.Form):
             weight=20,
         ))
 
+        # Label
         self.add_widget(_widget.static.HTML(
             uid='theme_settings_header',
             weight=30,
@@ -151,6 +103,7 @@ class Form(_settings.Form):
             uid='setting_logo',
             weight=31,
             label=_lang.t('theming@logo'),
+            skip_missing=True,
         ))
 
         # Favicon
@@ -158,64 +111,7 @@ class Form(_settings.Form):
             uid='setting_favicon',
             weight=40,
             label=_lang.t('theming@favicon'),
+            skip_missing=True,
         ))
 
-        # Translations
-        self.add_widget(_TranslationsEditTable(
-            uid='translations',
-            weight=500,
-        ))
-
-        try:
-            super()._on_setup_widgets()
-        except _file.error.FileNotFound:
-            pass
-
-    def _on_submit(self):
-        orig_translations = _lang.get_package_translations(_api.get().package_name)
-
-        for k, v in _router.request().inp.items():
-            if not k.startswith('translation_'):
-                continue
-
-            msg_full_id = k.replace('translation_', '')
-            msg_id = msg_full_id.split('@')[1]
-            msg_trans = v.strip()
-
-            if msg_id not in orig_translations:
-                raise RuntimeError("Message ID '{}' is not found in package's translations".format(msg_id))
-
-            # Create or dispense entity
-            entity = _odm.find('theme_translation') \
-                .eq('message_id', msg_full_id) \
-                .eq('language', _lang.get_current()) \
-                .first()
-            if not entity:
-                entity = _odm.dispense('theme_translation')
-
-            if msg_trans:
-                # New message is the same as in the package's file translations, so custom translation can be deleted
-                if orig_translations[msg_id] == msg_trans:
-                    if not entity.is_new:
-                        try:
-                            entity.delete()
-                        except _odm.error.EntityDeleted:
-                            # Entity was deleted by another instance
-                            pass
-
-                # Save custom translation
-                else:
-                    entity.f_set('message_id', msg_full_id).f_set('translation', msg_trans).save()
-
-            # If no translation was provided, delete entity
-            elif not entity.is_new:
-                try:
-                    entity.delete()
-                except _odm.error.EntityDeleted:
-                    # Entity was deleted by another instance
-                    pass
-
-        # Clear translations cache
-        _lang.clear_cache()
-
-        return super()._on_submit()
+        super()._on_setup_widgets()

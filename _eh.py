@@ -5,11 +5,10 @@ __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
 import subprocess as _subprocess
-from typing import Optional as _Optional
 from os import path as _path
 from pytsite import metatag as _metatag, console as _console, lang as _lang, reg as _reg, plugman as _plugman, \
     package_info as _package_info, pip as _pip
-from plugins import assetman as _assetman, file as _file, odm as _odm
+from plugins import assetman as _assetman, file as _file
 from . import _api
 
 
@@ -32,20 +31,6 @@ def router_dispatch():
             pass
     else:
         _metatag.t_set('link', rel='icon', type='image/png', href=_assetman.url('$theme@img/favicon.png'))
-
-
-def lang_translate(language: str, package_name: str, msg_id: str) -> _Optional[str]:
-    """pytsite.lang.translate
-    """
-    if package_name == _api.get().package_name:
-        e = _odm.find('theme_translation') \
-            .eq('language', language) \
-            .eq('message_id', '{}@{}'.format(package_name, msg_id)) \
-            .first()
-
-        return e.f_get('translation') if e else None
-
-    return None
 
 
 def lang_split_msg_id(msg_id: str):
@@ -78,7 +63,7 @@ def assetman_split_location(location: str):
     return location
 
 
-def update(data: dict):
+def update():
     # Update all installed themes
     for theme in _api.get_all().values():
         _console.print_info(_lang.t('theming@updating_theme', {'name': theme.name}))
