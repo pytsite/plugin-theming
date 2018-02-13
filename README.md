@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.9.1 (2018-02-14)
+
+`plugin.json` fixed.
+
+
 ### 1.9 (2018-02-14)
 
 Translations UI removed.

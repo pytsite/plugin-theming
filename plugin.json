@@ -1,6 +1,6 @@
 {
   "name": "theming",
-  "version": "1.9",
+  "version": "1.9.1",
   "description": {
     "en": "Theming",
     "ru": "Theming",
@@ -17,7 +17,7 @@
     "plugins": [
       "assetman>=1.3",
       "auth>=1.8",
-      "file_ui",
+      "file_ui>=1.3",
       "font_awesome",
       "http_api",
       "settings>=1.3",
