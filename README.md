@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.10 (2018-02-20)
+
+Support for PytSite-7.11.
+
+
 ### 1.9.1 (2018-02-14)
 
 `plugin.json` fixed.

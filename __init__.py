@@ -57,7 +57,7 @@ def plugin_load():
     tpl.register_global('theme_logo_url', logo_url)
 
     # Events handlers
-    tpl.on_split_location(_eh.tpl_split_location)
+    tpl.on_resolve_location(_eh.tpl_resolve_location)
     update.on_update(_eh.update)
 
     # Load default theme

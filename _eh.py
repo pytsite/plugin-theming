@@ -43,7 +43,7 @@ def lang_split_msg_id(msg_id: str):
     return msg_id
 
 
-def tpl_split_location(location: str) -> str:
+def tpl_resolve_location(location: str) -> str:
     if '@' not in location:
         location = '$theme@' + location
 
