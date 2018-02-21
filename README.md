@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.10.1 (2018-02-21)
+
+Permissions checking fixed.
+
+
 ### 1.10 (2018-02-20)
 
 Support for PytSite-7.11.
