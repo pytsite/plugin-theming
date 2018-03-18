@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.10.2 (2018-03-18)
+
+Settings form setup fixed.
+
+
 ### 1.10.1 (2018-02-21)
 
 Permissions checking fixed.

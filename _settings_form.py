@@ -66,9 +66,6 @@ class _ThemesBrowser(_widget.Abstract):
 
 
 class Form(_settings.Form):
-    def _on_setup_form(self, **kwargs):
-        self.nocache = True
-
     def _on_setup_widgets(self):
         # Label
         self.add_widget(_widget.static.HTML(
