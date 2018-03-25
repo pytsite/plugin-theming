@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.11 (2018-03-25)
+
+Footer's logo management added.
+
+
 ### 1.10.2 (2018-03-18)
 
 Settings form setup fixed.

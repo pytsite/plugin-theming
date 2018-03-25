@@ -98,15 +98,23 @@ class Form(_settings.Form):
         # Logo
         self.add_widget(_file_ui.widget.ImagesUpload(
             uid='setting_logo',
-            weight=31,
+            weight=40,
             label=_lang.t('theming@logo'),
+            skip_missing=True,
+        ))
+
+        # Footer logo
+        self.add_widget(_file_ui.widget.ImagesUpload(
+            uid='setting_logo_footer',
+            weight=50,
+            label=_lang.t('theming@logo_footer'),
             skip_missing=True,
         ))
 
         # Favicon
         self.add_widget(_file_ui.widget.ImagesUpload(
             uid='setting_favicon',
-            weight=40,
+            weight=60,
             label=_lang.t('theming@favicon'),
             skip_missing=True,
         ))

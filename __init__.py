@@ -46,15 +46,26 @@ def plugin_load():
     assetman.js_module('theme-widget-translations-edit', 'theming@js/translations-edit')
 
     # App's logo URL resolver
-    def logo_url(width: int = 0, height: int = 0):
+    def logo_url(width: int = 0, height: int = 0, enlarge: bool = False):
         s = reg.get('theme.logo')
         try:
-            return file.get(s).get_url(width=width, height=height) if s else assetman.url('$theme@img/appicon.png')
+            return file.get(s).get_url(width=width, height=height, enlarge = enlarge) if s else \
+                assetman.url('$theme@img/appicon.png')
         except file.error.FileNotFound:
             return assetman.url('$theme@img/appicon.png')
 
+    # App's footer logo URL resolver
+    def footer_logo_url(width: int = 0, height: int = 0, enlarge: bool = False):
+        s = reg.get('theme.logo_footer')
+        try:
+            return file.get(s).get_url(width=width, height=height, enlarge = enlarge) if s else \
+                assetman.url('$theme@img/appicon-footer.png')
+        except file.error.FileNotFound:
+            return assetman.url('$theme@img/appicon-footer.png')
+
     # Tpl globals and events listeners
     tpl.register_global('theme_logo_url', logo_url)
+    tpl.register_global('theme_footer_logo_url', footer_logo_url)
 
     # Events handlers
     tpl.on_resolve_location(_eh.tpl_resolve_location)
