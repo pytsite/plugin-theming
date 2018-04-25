@@ -13,7 +13,7 @@ from . import _api
 
 class Install(_routing.Controller):
     def exec(self):
-        if not _auth.get_current_user().is_admin_or_dev:
+        if not _auth.get_current_user().is_admin:
             raise self.forbidden()
 
         file = self.args.pop('file')  # type: _FileStorage
@@ -51,7 +51,7 @@ class Install(_routing.Controller):
 
 class Switch(_routing.Controller):
     def exec(self):
-        if not _auth.get_current_user().is_admin_or_dev:
+        if not _auth.get_current_user().is_admin:
             raise self.forbidden()
 
         _api.switch(self.arg('package_name'))
@@ -61,7 +61,7 @@ class Switch(_routing.Controller):
 
 class Uninstall(_routing.Controller):
     def exec(self):
-        if not _auth.get_current_user().is_admin_or_dev:
+        if not _auth.get_current_user().is_admin:
             raise self.forbidden()
 
         _api.uninstall(self.arg('package_name'))

@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.12 (2018-04-25)
+
+Support of `auth-3.0`.
+
+
 ### 1.11 (2018-03-25)
 
 Footer's logo management added.
