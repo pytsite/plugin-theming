@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.13.2 (2018-05-06)
+
+Fixed theme load errors while `plugman` working.
+
+
 ### 1.13.1 (2018-05-06)
 
 Install and update hooks actions fixed.

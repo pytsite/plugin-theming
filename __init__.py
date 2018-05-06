@@ -7,7 +7,7 @@ __license__ = 'MIT'
 
 def plugin_load():
     from os import listdir, path, makedirs
-    from pytsite import console, lang, update, tpl, reg
+    from pytsite import console, lang, update, tpl, reg, plugman
     from plugins import assetman, file
     from . import _api, _error, _eh
 
@@ -72,7 +72,8 @@ def plugin_load():
     update.on_update_stage_2(_eh.on_update_stage_2)
 
     # Load default theme
-    _api.load()
+    if not plugman.is_management_mode():
+        _api.load()
 
 
 def plugin_install():
