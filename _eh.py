@@ -12,7 +12,7 @@ from plugins import assetman as _assetman, file as _file
 from . import _api
 
 
-def router_dispatch():
+def on_router_dispatch():
     """pytsite.router.dispatch
     """
     if not _assetman.is_package_registered(_api.get().package_name):
@@ -33,7 +33,7 @@ def router_dispatch():
         _metatag.t_set('link', rel='icon', type='image/png', href=_assetman.url('$theme@img/favicon.png'))
 
 
-def lang_split_msg_id(msg_id: str):
+def on_lang_split_msg_id(msg_id: str):
     if '@' not in msg_id:
         msg_id = '$theme@' + msg_id
 
@@ -43,7 +43,7 @@ def lang_split_msg_id(msg_id: str):
     return msg_id
 
 
-def tpl_resolve_location(location: str) -> str:
+def on_tpl_resolve_location(location: str) -> str:
     if '@' not in location:
         location = '$theme@' + location
 
@@ -53,7 +53,7 @@ def tpl_resolve_location(location: str) -> str:
     return location
 
 
-def assetman_split_location(location: str):
+def on_assetman_split_location(location: str):
     if '@' not in location:
         location = '$theme@' + location
 
@@ -63,14 +63,15 @@ def assetman_split_location(location: str):
     return location
 
 
-def update():
+def on_update_stage_2():
     # Update all installed themes
     for theme in _api.get_all().values():
-        _console.print_info(_lang.t('theming@updating_theme', {'name': theme.name}))
-
         # Fetch updates via git
         if _path.exists(_path.join(theme.path, '.git')):
+            _console.print_info(_lang.t('theming@updating_theme', {'name': theme.name}))
             _subprocess.call(['git', '-C', theme.path, 'pull'])
+
+        _console.print_info(_lang.t('theming@installing_theme_requirements', {'name': theme.name}))
 
         # Install or upgrade required pip packagers
         for pkg_spec in _package_info.requires_packages(theme.package_name, use_cache=False):
@@ -79,3 +80,7 @@ def update():
         # Install or upgrade required plugins
         for plugin_spec in _package_info.requires_plugins(theme.package_name, use_cache=False):
             _plugman.install(plugin_spec)
+
+
+def on_plugin_install():
+    on_update_stage_2()

@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.13.1 (2018-05-06)
+
+Install and update hooks actions fixed.
+
+
 ### 1.13 (2018-05-06)
 
 Support of PytSite-7.17.

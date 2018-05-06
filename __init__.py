@@ -35,11 +35,11 @@ def plugin_load():
     lang.register_package(__name__)
 
     # Language events handlers
-    lang.on_split_msg_id(_eh.lang_split_msg_id)
+    lang.on_split_msg_id(_eh.on_lang_split_msg_id)
 
     # Assets
     assetman.register_package(__name__)
-    assetman.on_split_location(_eh.assetman_split_location)
+    assetman.on_split_location(_eh.on_assetman_split_location)
     assetman.t_js(__name__)
     assetman.t_less(__name__)
     assetman.js_module('theme-widget-themes-browser', 'theming@js/themes-browser')
@@ -49,7 +49,7 @@ def plugin_load():
     def logo_url(width: int = 0, height: int = 0, enlarge: bool = False):
         s = reg.get('theme.logo')
         try:
-            return file.get(s).get_url(width=width, height=height, enlarge = enlarge) if s else \
+            return file.get(s).get_url(width=width, height=height, enlarge=enlarge) if s else \
                 assetman.url('$theme@img/appicon.png')
         except file.error.FileNotFound:
             return assetman.url('$theme@img/appicon.png')
@@ -58,7 +58,7 @@ def plugin_load():
     def footer_logo_url(width: int = 0, height: int = 0, enlarge: bool = False):
         s = reg.get('theme.logo_footer')
         try:
-            return file.get(s).get_url(width=width, height=height, enlarge = enlarge) if s else \
+            return file.get(s).get_url(width=width, height=height, enlarge=enlarge) if s else \
                 assetman.url('$theme@img/appicon-footer.png')
         except file.error.FileNotFound:
             return assetman.url('$theme@img/appicon-footer.png')
@@ -68,8 +68,8 @@ def plugin_load():
     tpl.register_global('theme_footer_logo_url', footer_logo_url)
 
     # Events handlers
-    tpl.on_resolve_location(_eh.tpl_resolve_location)
-    update.on_update(_eh.update)
+    tpl.on_resolve_location(_eh.on_tpl_resolve_location)
+    update.on_update_stage_2(_eh.on_update_stage_2)
 
     # Load default theme
     _api.load()
@@ -77,9 +77,12 @@ def plugin_load():
 
 def plugin_install():
     from plugins import assetman
+    from . import _eh
 
     assetman.build(__name__)
     assetman.build_translations()
+
+    _eh.on_plugin_install()
 
 
 def plugin_load_uwsgi():
@@ -91,7 +94,7 @@ def plugin_load_uwsgi():
     settings.define('theme', _settings_form.Form, 'theming@appearance', 'fa fa-paint-brush')
 
     # Events handlers
-    router.on_dispatch(_eh.router_dispatch)
+    router.on_dispatch(_eh.on_router_dispatch)
 
     # HTTP API handlers
     http_api.handle('POST', 'theme', _http_api_controllers.Install, 'theming@install')
