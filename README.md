@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.13 (2018-05-06)
+
+Support of PytSite-7.17.
+
+
 ### 1.12 (2018-04-25)
 
 Support of `auth-3.0`.

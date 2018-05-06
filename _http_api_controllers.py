@@ -21,12 +21,12 @@ class Install(_routing.Controller):
         if not file:
             # It is important to return all input arguments back (except file, of course)
             self.args.update({'error': _lang.t('theming@theme_file_not_provided')})
-            raise self.server_error(response=_http.response.JSON(dict(self.args)))
+            raise self.server_error(response=_http.JSONResponse(dict(self.args)))
 
         if file.mimetype != 'application/zip':
             # It is important to return all input arguments back (except file, of course)
             self.args.update({'error': _lang.t('theming@only_zip_files_supported')})
-            raise self.server_error(response=_http.response.JSON(dict(self.args)))
+            raise self.server_error(response=_http.JSONResponse(dict(self.args)))
 
         # Save received file to temporary directory
         tmp_file_id, tmp_file_path = _util.mk_tmp_file('.zip')
@@ -38,7 +38,7 @@ class Install(_routing.Controller):
             _api.install(tmp_file_path)
         except Exception as e:
             self.args.update({'error': _lang.t('theming@theme_installation_failed', {'msg': str(e)})})
-            raise self.server_error(response=_http.response.JSON(dict(self.args)))
+            raise self.server_error(response=_http.JSONResponse(dict(self.args)))
 
         # It is important to return all input arguments back (except file, of course)
         self.args.update({
