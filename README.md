@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.14 (2018-05-13)
+
+Support of `widget-2.0`.
+
+
 ### 1.13.2 (2018-05-06)
 
 Fixed theme load errors while `plugman` working.
