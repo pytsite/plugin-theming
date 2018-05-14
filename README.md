@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.15 (2018-05-14)
+
+Support of `assetman-1.4`.
+
+
 ### 1.14 (2018-05-13)
 
 Support of `widget-2.0`.

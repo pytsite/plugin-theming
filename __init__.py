@@ -88,7 +88,7 @@ def plugin_install():
 
 def plugin_load_uwsgi():
     from pytsite import router
-    from plugins import http_api, settings
+    from plugins import http_api, settings, assetman
     from . import _api, _eh, _http_api_controllers, _error, _settings_form
 
     # Settings
@@ -101,3 +101,6 @@ def plugin_load_uwsgi():
     http_api.handle('POST', 'theme', _http_api_controllers.Install, 'theming@install')
     http_api.handle('PATCH', 'theme', _http_api_controllers.Switch, 'theming@switch')
     http_api.handle('DELETE', 'theme', _http_api_controllers.Uninstall, 'theming@uninstall')
+
+    # Assets
+    assetman.preload('theming@js/theming.js', True)
