@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 1.15.1 (2018-06-22)
+
+Cleaned up.
+
+
 ### 1.15 (2018-05-14)
 
 Support of `assetman-1.4`.

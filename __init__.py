@@ -43,7 +43,6 @@ def plugin_load():
     assetman.t_js(__name__)
     assetman.t_less(__name__)
     assetman.js_module('theme-widget-themes-browser', 'theming@js/themes-browser')
-    assetman.js_module('theme-widget-translations-edit', 'theming@js/translations-edit')
 
     # App's logo URL resolver
     def logo_url(width: int = 0, height: int = 0, enlarge: bool = False):
