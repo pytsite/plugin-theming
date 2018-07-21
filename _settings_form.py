@@ -50,14 +50,15 @@ class _ThemesBrowser(_widget.Abstract):
             if _api.get().name != theme.name:
                 # 'Switch' button
                 btn_switch = _html.A(title=_lang.t('theming@switch_to_this_theme'), href='#', role='button',
-                                     css='btn btn-default btn-xs button-switch', data_package_name=theme.package_name)
-                btn_switch.append(_html.I(css='fa fa-power-off'))
+                                     css='btn btn-default btn-light btn-sm button-switch',
+                                     data_package_name=theme.package_name)
+                btn_switch.append(_html.I(css='fa fas fa-power-off'))
                 actions.append(btn_switch)
 
                 # 'Uninstall' button
                 btn_delete = _html.A(title=_lang.t('theming@uninstall_theme'), href='#', role='button',
-                                     css='btn btn-danger btn-xs button-uninstall', data_package_name=theme.package_name)
-                btn_delete.append(_html.I(css='fa fa-trash'))
+                                     css='btn btn-danger btn-sm button-uninstall', data_package_name=theme.package_name)
+                btn_delete.append(_html.I(css='fa fas fa-trash'))
                 actions.append(btn_delete)
 
             tr.append(_html.Td(actions))

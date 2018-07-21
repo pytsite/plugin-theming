@@ -3,6 +3,10 @@
 
 ## Changelog
 
+### 1.15.2 (2018-07-21)
+
+Support of Twitter Bootstrap 4 fixed.
+
 
 ### 1.15.1 (2018-06-22)
 
