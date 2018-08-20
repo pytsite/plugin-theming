@@ -3,6 +3,12 @@
 
 ## Changelog
 
+
+### 1.16 (2018-08-20)
+
+Support of PytSite-7.31.
+
+
 ### 1.15.2 (2018-07-21)
 
 Support of Twitter Bootstrap 4 fixed.

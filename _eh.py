@@ -1,6 +1,6 @@
 """PytSite Theme Event Handlers
 """
-__author__ = 'Alexander Shepetko'
+__author__ = 'Oleksandr Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
@@ -66,21 +66,20 @@ def on_assetman_split_location(location: str):
 def on_update_stage_2():
     # Update all installed themes
     for theme in _api.get_all().values():
-        # Fetch updates via git
         if _path.exists(_path.join(theme.path, '.git')):
             _console.print_info(_lang.t('theming@updating_theme', {'name': theme.name}))
             _subprocess.call(['git', '-C', theme.path, 'pull'])
 
+
+def on_plugman_install_update_all():
+    # Install/update requirements for all installed themes
+    for theme in _api.get_all().values():
         _console.print_info(_lang.t('theming@installing_theme_requirements', {'name': theme.name}))
 
         # Install or upgrade required pip packagers
         for pkg_spec in _package_info.requires_packages(theme.package_name, use_cache=False):
             _pip.install(pkg_spec, _pip.is_installed(pkg_spec))
 
-        # Install or upgrade required plugins
+        # Install or update required plugins
         for plugin_spec in _package_info.requires_plugins(theme.package_name, use_cache=False):
             _plugman.install(plugin_spec)
-
-
-def on_plugin_install():
-    on_update_stage_2()

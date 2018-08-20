@@ -1,6 +1,6 @@
 """PytSite Theming Plugin
 """
-__author__ = 'Alexander Shepetko'
+__author__ = 'Oleksandr Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
@@ -69,6 +69,8 @@ def plugin_load():
     # Events handlers
     tpl.on_resolve_location(_eh.on_tpl_resolve_location)
     update.on_update_stage_2(_eh.on_update_stage_2)
+    plugman.on_install_all(_eh.on_plugman_install_update_all)
+    plugman.on_update_all(_eh.on_plugman_install_update_all)
 
     # Load default theme
     if not plugman.is_management_mode():
@@ -82,7 +84,7 @@ def plugin_install():
     assetman.build(__name__)
     assetman.build_translations()
 
-    _eh.on_plugin_install()
+    _eh.on_update_stage_2()
 
 
 def plugin_load_uwsgi():
