@@ -77,8 +77,8 @@ def on_plugman_install_update_all():
         _console.print_info(_lang.t('theming@installing_theme_requirements', {'name': theme.name}))
 
         # Install or upgrade required pip packagers
-        for pkg_spec in _package_info.requires_packages(theme.package_name, use_cache=False):
-            _pip.install(pkg_spec, _pip.is_installed(pkg_spec))
+        for pkg_name, pkg_ver in _package_info.requires_packages(theme.package_name, use_cache=False).items():
+            _pip.install(pkg_name, pkg_ver, True, _reg.get('debug'))
 
         # Install or update required plugins
         for plugin_spec in _package_info.requires_plugins(theme.package_name, use_cache=False):

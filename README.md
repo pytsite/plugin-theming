@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 2.0 (2018-10-11)
+
+Support of `pystite-8.x`, `assetman-3.x`.
+
+
 ### 1.16 (2018-08-20)
 
 Support of PytSite-7.31.

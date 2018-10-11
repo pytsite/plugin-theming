@@ -1,6 +1,6 @@
 {
   "name": "theming",
-  "version": "1.16",
+  "version": "2.0",
   "description": {
     "en": "Theming",
     "ru": "Theming",
@@ -13,15 +13,14 @@
     "url": "https://shepetko.com"
   },
   "requires": {
-    "pytsite": ">=7.31",
-    "plugins": [
-      "assetman>=1.4",
-      "auth>=3.0",
-      "file_ui>=1.3",
-      "font_awesome",
-      "http_api",
-      "settings>=1.3",
-      "widget>=2.0"
-    ]
+    "pytsite": ">=8",
+    "plugins": {
+      "assetman": "3.x",
+      "auth": "3.x",
+      "file_ui": "2.x",
+      "http_api": "3.x",
+      "settings": "2.x",
+      "widget": "3.x"
+    }
   }
 }

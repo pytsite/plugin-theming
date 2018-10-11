@@ -9,7 +9,8 @@ from os import path as _path, unlink as _unlink, chdir as _chdir, getcwd as _get
 from shutil import rmtree as _rmtree, move as _move
 from zipfile import ZipFile as _ZipFile
 from glob import glob as _glob
-from pytsite import reg as _reg, logger as _logger, util as _util, reload as _reload, plugman as _plugman, pip as _pip
+from pytsite import reg as _reg, logger as _logger, util as _util, reload as _reload, plugman as _plugman, pip as _pip, \
+    semver as _semver
 from . import _theme, _error
 
 _themes_path = _path.join(_reg.get('paths.root'), 'themes')
@@ -143,16 +144,16 @@ def install(archive_path: str, delete_zip_file: bool = True):
         theme = _theme.Theme('tmp.theme.{}'.format(_path.basename(tmp_dir_path)))
 
         # Install required pip packages
-        for pkg_spec in theme.requires['packages']:
-            if not _pip.is_installed(pkg_spec):
-                _logger.info("Theme '{}' requires pip package '{}', going to install it".format(theme.name, pkg_spec))
-                _pip.install(pkg_spec)
+        for pkg_name, pkg_version in theme.requires['packages'].items():
+            _logger.info("Theme '{}' requires pip package '{} {}', going to install it".
+                         format(theme.name, pkg_name, pkg_name, pkg_version))
+            _pip.install(pkg_name, pkg_version, True, _reg.get('debug'))
 
         # Install required plugins
-        for plugin_spec in theme.requires['packages']:
-            if not _plugman.is_installed(plugin_spec):
-                _logger.info("Theme '{}' requires plugin '{}', going to install it".format(theme.name, plugin_spec))
-                _plugman.install(plugin_spec)
+        for p_name, p_version in theme.requires['plugins'].items():
+            if not _plugman.is_installed(p_name, _semver.VersionRange(p_version)):
+                _logger.info("Theme '{}' requires plugin '{}', installing...".format(theme.name, p_name, p_version))
+                _plugman.install(p_name, p_version)
 
         # Theme has been successfully initialized, so now it can be moved to the 'themes' package
         dst_path = _path.join(_themes_path, theme.name)

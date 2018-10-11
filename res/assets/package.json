@@ -1,0 +1,7 @@
+{
+  "name": "@pytsite/theming",
+  "main": "index.js",
+  "dependencies": {
+    "jquery": "3.x"
+  }
+}

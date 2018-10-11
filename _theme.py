@@ -18,7 +18,7 @@ class Theme:
     def __init__(self, package_name: str):
         """Init
         """
-        # Load package data from JSON file
+        # Load package data from 'theme.json'
         pkg_data = _package_info.data(package_name)
 
         self._package_name = package_name
@@ -45,7 +45,7 @@ class Theme:
             raise RuntimeError('Error while loading theme {}: {}'.format(self._package_name, e))
 
         # Create translations directory
-        lang_dir = _path.join(self._path, 'lang')
+        lang_dir = _path.join(self._path, 'res', 'lang')
         if not _path.exists(lang_dir):
             _makedirs(lang_dir, 0o755, True)
 
@@ -56,24 +56,24 @@ class Theme:
                 with open(lng_f_path, 'wt'):
                     pass
 
-        # Register translations package
-        _lang.register_package(self._package_name, 'lang')
+        # Register translation resources
+        _lang.register_package(self._package_name)
 
-        # Register templates package
-        tpl_path = _path.join(self._path, 'tpl')
+        # Register template resources
+        tpl_path = _path.join(self._path, 'res', 'tpl')
         if not _path.exists(tpl_path):
             _makedirs(tpl_path, 0o755, True)
-        _tpl.register_package(self._package_name, 'tpl')
+        _tpl.register_package(self._package_name)
 
-        # Register assetman package
-        assets_path = _path.join(self._path, 'assets')
+        # Register assetman resources
+        assets_path = _path.join(self._path, 'res', 'assets')
         if not _path.exists(assets_path):
             _makedirs(assets_path, 0o755, True)
-        assetman.register_package(self._package_name, 'assets')
+        assetman.register_package(self._package_name)
 
         # Load required plugins
-        for plugin_spec in self._requires['plugins']:
-            _plugman.load(plugin_spec)
+        for p_name, p_version in self._requires['plugins'].items():
+            _plugman.load(p_name, p_version)
 
         # Load theme's module
         try:

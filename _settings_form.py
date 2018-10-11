@@ -21,7 +21,6 @@ class _ThemesBrowser(_widget.Abstract):
 
         self._data['http-api-ep-switch'] = _http_api.endpoint('theming@switch')
         self._data['http-api-ep-uninstall'] = _http_api.endpoint('theming@uninstall')
-        self._js_modules.append('theme-widget-themes-browser')
 
     def _get_element(self, **kwargs) -> _html.Element:
         cont = _html.TagLessElement()
