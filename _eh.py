@@ -77,5 +77,5 @@ def on_update_stage_2():
             _pip.install(p_name, p_ver, True, _reg.get('debug'))
 
         # Install or update required plugins
-        for p_name, p_ver in theme.requires['plugins'].items().items():
+        for p_name, p_ver in theme.requires['plugins'].items():
             _plugman.install(p_name, p_ver)

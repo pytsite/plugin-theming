@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 2.3.3 (2018-10-12)
+
+Typo fixed.
+
+
 ### 2.3.2 (2018-10-12)
 
 Installation hook fixed.
