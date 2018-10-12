@@ -62,7 +62,6 @@ def plugin_load():
     # Events handlers
     tpl.on_resolve_location(_eh.on_tpl_resolve_location)
     update.on_update_stage_2(_eh.on_update_stage_2)
-    plugman.on_install_all(_eh.on_plugman_install_all)
 
     # Load default theme
     if not plugman.is_management_mode():
