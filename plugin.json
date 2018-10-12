@@ -1,6 +1,6 @@
 {
   "name": "theming",
-  "version": "2.0",
+  "version": "2.1",
   "description": {
     "en": "Theming",
     "ru": "Theming",
@@ -15,7 +15,7 @@
   "requires": {
     "pytsite": ">=8",
     "plugins": {
-      "assetman": "3.x",
+      "assetman": "4.x",
       "auth": "3.x",
       "file_ui": "2.x",
       "http_api": "3.x",
