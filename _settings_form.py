@@ -6,8 +6,7 @@ __license__ = 'MIT'
 
 import re as _re
 from pytsite import lang as _lang, html as _html
-from plugins import widget as _widget, file as _file, settings as _settings, http_api as _http_api, \
-    file_ui as _file_ui
+from plugins import widget as _widget, settings as _settings, http_api as _http_api, file_ui as _file_ui
 from . import _api
 
 _TRANSLATION_MSG_ID_RE = _re.compile('^translation_[a-z0-9._@]+')

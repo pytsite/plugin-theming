@@ -71,7 +71,7 @@ def on_update_stage_2():
             _subprocess.call(['git', '-C', theme.path, 'pull'])
 
 
-def on_plugman_install_update_all():
+def on_plugman_install_all():
     # Install/update requirements for all installed themes
     for theme in _api.get_all().values():
         _console.print_info(_lang.t('theming@installing_theme_requirements', {'name': theme.name}))
@@ -81,5 +81,5 @@ def on_plugman_install_update_all():
             _pip.install(pkg_name, pkg_ver, True, _reg.get('debug'))
 
         # Install or update required plugins
-        for plugin_spec in _package_info.requires_plugins(theme.package_name, use_cache=False):
-            _plugman.install(plugin_spec)
+        for p_name, p_ver in _package_info.requires_plugins(theme.package_name, use_cache=False).items():
+            _plugman.install(p_name, p_ver)
