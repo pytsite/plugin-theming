@@ -70,6 +70,16 @@ def on_update_stage_2():
             _console.print_info(_lang.t('theming@updating_theme', {'name': theme.name}))
             _subprocess.call(['git', '-C', theme.path, 'pull'])
 
+    # Update NPM dependencies
+    _assetman.setup()
+
+    # Build themes assets
+    for theme in _api.get_all().values():
+        _assetman.build(theme.package_name)
+
+    # Build translations
+    _assetman.build_translations()
+
 
 def on_plugman_install_all():
     # Install/update requirements for all installed themes

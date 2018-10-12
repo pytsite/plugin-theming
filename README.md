@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 2.3 (2018-10-12)
+
+Support of `assetman-4.1`.
+
+
 ### 2.2 (2018-10-12)
 
 Support of `pystite-8.1`
