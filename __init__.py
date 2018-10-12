@@ -5,6 +5,29 @@ __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
 
+def _update_themes():
+    import subprocess
+    from os import path
+    from pytsite import console, lang, pip, plugman, reg
+    from . import _api
+
+    for theme in _api.get_all().values():
+        # Update theme from git repository
+        if path.exists(path.join(theme.path, '.git')):
+            console.print_info(lang.t('theming@updating_theme', {'name': theme.name}))
+            subprocess.call(['git', '-C', theme.path, 'pull'])
+
+        console.print_info(lang.t('theming@installing_theme_requirements', {'name': theme.name}))
+
+        # Install/upgrade required pip packagers
+        for p_name, p_ver in theme.requires['packages'].items():
+            pip.install(p_name, p_ver, True, reg.get('debug'))
+
+        # Install or update required plugins
+        for p_name, p_ver in theme.requires['plugins'].items():
+            plugman.install(p_name, p_ver)
+
+
 def plugin_load():
     from os import listdir, path, makedirs
     from pytsite import console, lang, update, tpl, reg, plugman
@@ -61,7 +84,8 @@ def plugin_load():
 
     # Events handlers
     tpl.on_resolve_location(_eh.on_tpl_resolve_location)
-    update.on_update_stage_2(_eh.on_update_stage_2)
+    update.on_update_stage_2(_update_themes)
+    plugman.on_install_all(_update_themes)
 
     # Load default theme
     if not plugman.is_management_mode():
@@ -69,9 +93,7 @@ def plugin_load():
 
 
 def plugin_install():
-    from . import _eh
-
-    _eh.on_update_stage_2()
+    _update_themes()
 
 
 def plugin_load_wsgi():

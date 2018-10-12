@@ -61,21 +61,3 @@ def on_assetman_split_location(location: str):
         location = location.replace('$theme', _api.get().package_name)
 
     return location
-
-
-def on_update_stage_2():
-    for theme in _api.get_all().values():
-        # Update theme from git repository
-        if _path.exists(_path.join(theme.path, '.git')):
-            _console.print_info(_lang.t('theming@updating_theme', {'name': theme.name}))
-            _subprocess.call(['git', '-C', theme.path, 'pull'])
-
-        _console.print_info(_lang.t('theming@installing_theme_requirements', {'name': theme.name}))
-
-        # Install/upgrade required pip packagers
-        for p_name, p_ver in theme.requires['packages'].items():
-            _pip.install(p_name, p_ver, True, _reg.get('debug'))
-
-        # Install or update required plugins
-        for p_name, p_ver in theme.requires['plugins'].items():
-            _plugman.install(p_name, p_ver)
