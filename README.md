@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 2.4 (2018-10-22)
+
+Support of `assetman-5.x` and `widget-4.x`.
+
+
 ### 2.3.4 (2018-10-12)
 
 Installation hook fixed.

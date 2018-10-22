@@ -1,7 +1,9 @@
-const $ = require('jquery');
-const httpApi = require('@pytsite/http-api');
+import $ from 'jquery';
+import {lang} from '@pytsite/assetman';
+import httpApi from '@pytsite/http-api';
+import setupWidget from '@pytsite/widget';
 
-require('@pytsite/widget').onWidgetLoad('plugins.theming._settings_form._ThemesBrowser', (widget) => {
+setupWidget('plugins.theming._settings_form._ThemesBrowser', widget => {
     widget.em.find('.button-switch').click(function () {
         if (confirm(lang.t('theming@theme_switch_confirmation'))) {
             $(this).closest('table').find('.btn').addClass('disabled');

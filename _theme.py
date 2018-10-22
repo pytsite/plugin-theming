@@ -97,8 +97,8 @@ class Theme:
         # Compile assets
         if not _reg.get('theme.compiled'):
             assetman.setup()
+            assetman.build_translations(self._package_name)
             assetman.build(self._package_name)
-            assetman.build_translations()
             _reg.put('theme.compiled', True)
 
         self._is_loaded = True
