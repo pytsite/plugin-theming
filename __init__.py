@@ -9,6 +9,7 @@ def _update_themes():
     import subprocess
     from os import path
     from pytsite import console, lang, pip, plugman, reg
+    from plugins import assetman
     from . import _api
 
     for theme in _api.get_all().values():
@@ -26,6 +27,10 @@ def _update_themes():
         # Install or update required plugins
         for p_name, p_ver in theme.requires['plugins'].items():
             plugman.install(p_name, p_ver)
+
+        # Compile theme assets
+        if assetman.is_package_registered(theme.package_name):
+            assetman.build(theme.package_name)
 
 
 def plugin_load():

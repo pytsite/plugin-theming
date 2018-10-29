@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 2.4.1 (2018-10-29)
+
+Automatic assets building fixed.
+
+
 ### 2.4 (2018-10-22)
 
 Support of `assetman-5.x` and `widget-4.x`.

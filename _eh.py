@@ -4,10 +4,7 @@ __author__ = 'Oleksandr Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
-import subprocess as _subprocess
-from os import path as _path
-from pytsite import metatag as _metatag, console as _console, lang as _lang, reg as _reg, plugman as _plugman, \
-    package_info as _package_info, pip as _pip
+from pytsite import metatag as _metatag, reg as _reg
 from plugins import assetman as _assetman, file as _file
 from . import _api
 
