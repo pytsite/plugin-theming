@@ -35,7 +35,7 @@ def _update_themes():
 
 def plugin_load():
     from os import listdir, path, makedirs
-    from pytsite import console, lang, update, tpl, reg, plugman
+    from pytsite import console, lang, update, tpl, reg, plugman, on_app_load
     from plugins import assetman, file
     from . import _api, _error, _eh
 
@@ -91,10 +91,7 @@ def plugin_load():
     tpl.on_resolve_location(_eh.on_tpl_resolve_location)
     update.on_update_stage_2(_update_themes)
     plugman.on_install_all(_update_themes)
-
-    # Load default theme
-    if not plugman.is_management_mode():
-        _api.load()
+    on_app_load(_eh.on_app_load)
 
 
 def plugin_install():

@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 2.5 (2018-11-30)
+
+Default theme loading stage moved after application loading event.
+
+
 ### 2.4.1 (2018-10-29)
 
 Automatic assets building fixed.

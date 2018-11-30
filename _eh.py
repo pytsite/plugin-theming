@@ -4,10 +4,15 @@ __author__ = 'Oleksandr Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
-from pytsite import metatag as _metatag, reg as _reg
+from pytsite import metatag as _metatag, reg as _reg, plugman as _plugman
 from plugins import assetman as _assetman, file as _file
 from . import _api
 
+
+def on_app_load():
+    # Load default theme
+    if not _plugman.is_management_mode():
+        _api.load()
 
 def on_router_dispatch():
     """pytsite.router.dispatch
