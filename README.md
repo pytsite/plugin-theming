@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 2.6 (2018-12-18)
+
+Public API.
+
+
 ### 2.5 (2018-11-30)
 
 Default theme loading stage moved after application loading event.

@@ -4,6 +4,9 @@ __author__ = 'Oleksandr Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
+# Public API
+from ._api import get, get_all, install, load, register, switch, themes_path, uninstall
+
 
 def _update_themes():
     import subprocess
