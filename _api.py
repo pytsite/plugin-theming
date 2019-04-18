@@ -153,7 +153,7 @@ def install(archive_path: str, delete_zip_file: bool = True):
         for p_name, p_version in theme.requires['plugins'].items():
             if not _plugman.is_installed(p_name, _semver.VersionRange(p_version)):
                 _logger.info("Theme '{}' requires plugin '{}', installing...".format(theme.name, p_name, p_version))
-                _plugman.install(p_name, p_version)
+                _plugman.install(p_name, _semver.VersionRange(p_version))
 
         # Theme has been successfully initialized, so now it can be moved to the 'themes' package
         dst_path = _path.join(_themes_path, theme.name)

@@ -13,7 +13,7 @@
     "url": "https://shepetko.com"
   },
   "requires": {
-    "pytsite": ">=8.1",
+    "pytsite": ">=8.13",
     "plugins": {
       "assetman": "5.x",
       "auth": "3.x",

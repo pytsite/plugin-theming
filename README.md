@@ -4,6 +4,11 @@
 ## Changelog
 
 
+### 2.7 (2019-04-18)
+
+Support of `pytsite-8.13`.
+
+
 ### 2.6 (2018-12-18)
 
 Public API.

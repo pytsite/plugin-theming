@@ -7,7 +7,7 @@ __license__ = 'MIT'
 from importlib import import_module as _import_module
 from os import path as _path, makedirs as _makedirs
 from pytsite import logger as _logger, package_info as _package_info, reg as _reg, plugman as _plugman, lang as _lang, \
-    tpl as _tpl
+    tpl as _tpl, semver as _semver
 from . import _error
 
 
@@ -72,8 +72,8 @@ class Theme:
         assetman.register_package(self._package_name)
 
         # Load required plugins
-        for p_name, p_version in self._requires['plugins'].items():
-            _plugman.load(p_name, p_version)
+        for pn, pv in self._requires['plugins'].items():
+            _plugman.load(pn, _semver.VersionRange(pv))
 
         # Load theme's module
         try:
