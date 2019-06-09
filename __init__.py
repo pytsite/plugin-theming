@@ -11,7 +11,7 @@ from ._api import get, get_all, install, load, register, switch, themes_path, un
 def _update_themes():
     import subprocess
     from os import path
-    from pytsite import console, lang, pip, plugman, reg, semver
+    from pytsite import console, lang, pip, plugman, semver
     from plugins import assetman
     from . import _api
 
@@ -25,7 +25,7 @@ def _update_themes():
 
         # Install/upgrade required pip packagers
         for p_name, p_ver in theme.requires['packages'].items():
-            pip.install(p_name, p_ver, True, reg.get('debug'))
+            pip.install(p_name, p_ver, True)
 
         # Install or update required plugins
         for p_name, p_ver in theme.requires['plugins'].items():
@@ -38,7 +38,7 @@ def _update_themes():
 
 def plugin_load():
     from os import listdir, path, makedirs
-    from pytsite import console, lang, update, tpl, reg, plugman, on_app_load
+    from pytsite import console, lang, update, tpl, reg, on_app_load
     from plugins import assetman, file
     from . import _api, _error, _eh
 
@@ -62,10 +62,10 @@ def plugin_load():
     else:
         raise _error.NoThemesFound(themes_dir)
 
-    # Language events handlers
+    # Lng events handlers
     lang.on_split_msg_id(_eh.on_lang_split_msg_id)
 
-    # Assets
+    # Assetman events handlers
     assetman.on_split_location(_eh.on_assetman_split_location)
 
     # App's logo URL resolver
