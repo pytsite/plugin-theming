@@ -10,8 +10,9 @@ from ._api import get, get_all, install, load, register, switch, themes_path, un
 
 def _update_themes():
     import subprocess
+    import semaver
     from os import path
-    from pytsite import console, lang, pip, plugman, semver
+    from pytsite import console, lang, pip, plugman
     from plugins import assetman
     from . import _api
 
@@ -29,7 +30,7 @@ def _update_themes():
 
         # Install or update required plugins
         for p_name, p_ver in theme.requires['plugins'].items():
-            plugman.install(p_name, semver.VersionRange(p_ver))
+            plugman.install(p_name, semaver.VersionRange(p_ver))
 
         # Compile theme assets
         if assetman.is_package_registered(theme.package_name):

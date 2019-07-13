@@ -4,81 +4,83 @@ __author__ = 'Oleksandr Shepetko'
 __email__ = 'a@shepetko.com'
 __license__ = 'MIT'
 
-import re as _re
-from pytsite import lang as _lang, html as _html
-from plugins import widget as _widget, settings as _settings, http_api as _http_api, file_ui as _file_ui
+import re
+import htmler
+from pytsite import lang
+from plugins import widget, settings, http_api, file_ui
 from . import _api
 
-_TRANSLATION_MSG_ID_RE = _re.compile('^translation_[a-z0-9._@]+')
+_TRANSLATION_MSG_ID_RE = re.compile('^translation_[a-z0-9._@]+')
 
 
-class _ThemesBrowser(_widget.Abstract):
+class _ThemesBrowser(widget.Abstract):
     def __init__(self, uid: str, **kwargs):
         """Init
         """
         super().__init__(uid, **kwargs)
 
-        self._data['http-api-ep-switch'] = _http_api.endpoint('theming@switch')
-        self._data['http-api-ep-uninstall'] = _http_api.endpoint('theming@uninstall')
+        self._data['http-api-ep-switch'] = http_api.endpoint('theming@switch')
+        self._data['http-api-ep-uninstall'] = http_api.endpoint('theming@uninstall')
 
-    def _get_element(self, **kwargs) -> _html.Element:
-        cont = _html.TagLessElement()
+    def _get_element(self, **kwargs) -> htmler.Element:
+        cont = htmler.TagLessElement()
 
-        cont.append(_html.H2(_lang.t('theming@installed_themes')))
+        cont.append_child(htmler.H2(lang.t('theming@installed_themes')))
 
-        table = cont.append(_html.Table(css='table table-striped table-bordered table-hover'))
+        table = cont.append_child(htmler.Table(css='table table-striped table-bordered table-hover'))
 
-        t_head = table.append(_html.Tr())
-        t_head.append(_html.Th(_lang.t('theming@name')))
-        t_head.append(_html.Th(_lang.t('theming@version')))
-        t_head.append(_html.Th(_lang.t('theming@author')))
-        t_head.append(_html.Th(_lang.t('theming@url')))
-        t_head.append(_html.Th(_lang.t('theming@actions')))
+        t_head = table.append_child(htmler.Tr())
+        t_head.append_child(htmler.Th(lang.t('theming@name')))
+        t_head.append_child(htmler.Th(lang.t('theming@version')))
+        t_head.append_child(htmler.Th(lang.t('theming@author')))
+        t_head.append_child(htmler.Th(lang.t('theming@url')))
+        t_head.append_child(htmler.Th(lang.t('theming@actions')))
 
-        t_body = table.append(_html.TBody())
+        t_body = table.append_child(htmler.Tbody())
         for theme in _api.get_all().values():
-            tr = t_body.append(_html.Tr())
-            tr.append(_html.Td(theme.name))
-            tr.append(_html.Td(theme.version))
-            tr.append(_html.Td(_html.A(theme.author['name'], href=theme.author['url'], target='_blank')))
-            tr.append(_html.Td(_html.A(theme.url, href=theme.url, target='_blank')))
+            tr = t_body.append_child(htmler.Tr())
+            tr.append_child(htmler.Td(theme.name))
+            tr.append_child(htmler.Td(theme.version))
+            tr.append_child(htmler.Td(htmler.A(theme.author['name'], href=theme.author['url'], target='_blank')))
+            tr.append_child(htmler.Td(htmler.A(theme.url, href=theme.url, target='_blank')))
 
-            actions = _html.TagLessElement(child_sep='&nbsp;')
+            actions = htmler.TagLessElement(child_sep='&nbsp;')
 
             if _api.get().name != theme.name:
                 # 'Switch' button
-                btn_switch = _html.A(title=_lang.t('theming@switch_to_this_theme'), href='#', role='button',
-                                     css='btn btn-default btn-light btn-sm button-switch',
-                                     data_package_name=theme.package_name)
-                btn_switch.append(_html.I(css='fa fas fa-power-off'))
-                actions.append(btn_switch)
+                btn_switch = htmler.A(title=lang.t('theming@switch_to_this_theme'), href='#', role='button',
+                                      css='btn btn-default btn-light btn-sm button-switch',
+                                      data_package_name=theme.package_name)
+                btn_switch.append_child(htmler.I(css='fa fas fa-power-off'))
+                actions.append_child(btn_switch)
 
                 # 'Uninstall' button
-                btn_delete = _html.A(title=_lang.t('theming@uninstall_theme'), href='#', role='button',
-                                     css='btn btn-danger btn-sm button-uninstall', data_package_name=theme.package_name)
-                btn_delete.append(_html.I(css='fa fas fa-trash'))
-                actions.append(btn_delete)
+                btn_delete = htmler.A(title=lang.t('theming@uninstall_theme'), href='#', role='button',
+                                      css='btn btn-danger btn-sm button-uninstall',
+                                      data_package_name=theme.package_name)
+                btn_delete.append_child(htmler.I(css='fa fas fa-trash'))
+                actions.append_child(btn_delete)
 
-            tr.append(_html.Td(actions))
+            tr.append_child(htmler.Td(actions))
 
         return cont
 
 
-class Form(_settings.Form):
+class Form(settings.Form):
     def _on_setup_widgets(self):
         # Label
-        self.add_widget(_widget.static.HTML(
+        self.add_widget(widget.static.HTML(
             uid='upload_header',
             weight=10,
-            em=_html.H2(_lang.t('theming@install_or_update_theme'))
+            em=htmler.H2(lang.t('theming@install_or_update_theme'))
         ))
 
         # Upload theme input
-        self.add_widget(_widget.input.File(
+        self.add_widget(widget.input.File(
             uid='file',
             weight=11,
             max_files=1,
-            upload_endpoint=_http_api.endpoint('theming@install'),
+            upload_endpoint=http_api.endpoint('theming@install'),
         ))
 
         # Themes browser
@@ -88,33 +90,33 @@ class Form(_settings.Form):
         ))
 
         # Label
-        self.add_widget(_widget.static.HTML(
+        self.add_widget(widget.static.HTML(
             uid='theme_settings_header',
             weight=30,
-            em=_html.H2(_lang.t('theming@theme_settings')),
+            em=htmler.H2(lang.t('theming@theme_settings')),
         ))
 
         # Logo
-        self.add_widget(_file_ui.widget.ImagesUpload(
+        self.add_widget(file_ui.widget.ImagesUpload(
             uid='setting_logo',
             weight=40,
-            label=_lang.t('theming@logo'),
+            label=lang.t('theming@logo'),
             skip_missing=True,
         ))
 
         # Footer logo
-        self.add_widget(_file_ui.widget.ImagesUpload(
+        self.add_widget(file_ui.widget.ImagesUpload(
             uid='setting_logo_footer',
             weight=50,
-            label=_lang.t('theming@logo_footer'),
+            label=lang.t('theming@logo_footer'),
             skip_missing=True,
         ))
 
         # Favicon
-        self.add_widget(_file_ui.widget.ImagesUpload(
+        self.add_widget(file_ui.widget.ImagesUpload(
             uid='setting_favicon',
             weight=60,
-            label=_lang.t('theming@favicon'),
+            label=lang.t('theming@favicon'),
             skip_missing=True,
         ))
 

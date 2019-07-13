@@ -1,6 +1,6 @@
 {
   "name": "theming",
-  "version": "2.7.1",
+  "version": "2.8",
   "description": {
     "en": "Theming",
     "ru": "Theming",
@@ -13,7 +13,11 @@
     "url": "https://shepetko.com"
   },
   "requires": {
-    "pytsite": ">=8.13",
+    "pytsite": ">=9.0",
+    "packages": {
+      "htmler": ">=0.1",
+      "semaver": ">=0.1"
+    },
     "plugins": {
       "assetman": "5.x",
       "auth": "3.x",
